@@ -1,3 +1,4 @@
+require('dotenv').config()
 var faunadb = require('faunadb')
 var q = faunadb.query
 var client = new faunadb.Client({

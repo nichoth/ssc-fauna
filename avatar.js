@@ -17,21 +17,26 @@ function get (aboutWho) {
 function post (keys, file) {
     var hash = getHash(file)
 
+    console.log('start query')
+
     return client.query(
         q.If(
-            q.Exists(
-                q.Select('ref', q.Get(
-                    q.Match(q.Index('avatar-by-id'), '@' + keys.public)
-                ))
+            q.IsEmpty(
+                q.Match(q.Index('avatar-by-id'), '@' + keys.public)
+            ),
+            // q.Exists(
+            //     q.Select('ref', q.Get(
+            //         q.Match(q.Index('avatar-by-id'), '@' + keys.public)
+            //     ))
+            // ),
+            q.Create(
+                q.Collection('avatar'),
+                { data: { about: '@' + keys.public, avatarLink: hash } },
             ),
             q.Replace(
                 q.Select('ref', q.Get(
                     q.Match(q.Index('avatar-by-id'), '@' + keys.public)
                 )),
-                { data: { about: '@' + keys.public, avatarLink: hash } },
-            ),
-            q.Create(
-                q.Collection('avatar'),
                 { data: { about: '@' + keys.public, avatarLink: hash } },
             )
         )
