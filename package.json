@@ -1,4 +1,14 @@
 {
+  "name": "@nichoth/ssc-fauna",
+  "description": "SSC db built with [fauna db](https://fauna.com/)",
+  "version": "0.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "tape test/*.js"
+  },
   "dependencies": {
     "faunadb": "^4.3.0"
   },
@@ -6,5 +16,15 @@
     "dotenv": "^8.6.0",
     "tap-spec": "^5.0.0",
     "tape": "^5.2.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nichoth/ssc-fauna.git"
+  },
+  "author": "Nick Thomas <nichoth@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nichoth/ssc-fauna/issues"
+  },
+  "homepage": "https://github.com/nichoth/ssc-fauna#readme"
 }
