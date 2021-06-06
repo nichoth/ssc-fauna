@@ -5,12 +5,20 @@ var client = new faunadb.Client({
 })
 
 client.query(
-  q.CreateIndex({
-    name: 'avatar-by-id',
-    source: q.Collection('avatar'),
-    terms: [{ field: ['data', 'about'] }],
-  })
+  q.CreateCollection({ name: 'avatar' })
 )
-    .then((ret) => console.log(ret))
+    .then((ret) => {
+        createIndex()
+    })
     .catch((err) => console.error('Error: %s', err))
+
+function createIndex () {
+    return client.query(
+      q.CreateIndex({
+        name: 'avatar-by-id',
+        source: q.Collection('avatar'),
+        terms: [{ field: ['data', 'about'] }],
+      })
+    )
+}
 
