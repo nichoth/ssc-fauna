@@ -10,8 +10,6 @@ test('post an avatar', function (t) {
             encoding: 'base64'
         })
 
-    console.log('got file', !!file)
-
     avatar.post({ public: '123' }, file)
         .then(() => t.end())
         .catch(err => {

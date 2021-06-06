@@ -17,8 +17,6 @@ function get (aboutWho) {
 function post (keys, file) {
     var hash = getHash(file)
 
-    console.log('start query')
-
     return client.query(
         q.If(
             q.IsEmpty(
