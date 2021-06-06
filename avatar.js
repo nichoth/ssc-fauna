@@ -13,6 +13,7 @@ function get (aboutWho) {
     )
 }
 
+// either create or replace the existing avatar
 function post (keys, file) {
     var hash = getHash(file)
 
