@@ -11,7 +11,10 @@ test('post an avatar', function (t) {
         })
 
     avatar.post({ public: '123' }, file)
-        .then(() => t.end())
+        .then(() => {
+            t.pass('created an avatar document')
+            t.end()
+        })
         .catch(err => {
             t.error(err)
             t.end()
@@ -23,7 +26,8 @@ test('get an avatar', function (t) {
 
     avatar.get('@123')
         .then(res => {
-            t.equal(res.data.about, '@123')
+            t.equal(res.data.about, '@123', 'should return the right' +
+                ' public id in `get` request')
         })
         .catch(err => t.error(err))
 })
