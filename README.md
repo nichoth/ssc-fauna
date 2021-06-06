@@ -7,6 +7,8 @@ SSC db built with [fauna db](https://fauna.com/)
 
 1. Make a DB in fauna and put the secret key in `.env`.
 
+This secret key determines which DB the tests will use if you run them
+
 .env
 ```
 FAUNADB_SERVER_SECRET="123"
@@ -35,7 +37,7 @@ get('@123')
 // {
 //   "data": {
        // about -- your public ID
-//     "about": "aqIoSDv8jzWYBVKLr7/rQu/uxIHe/b8b+PWJp+Wziuw=.ed25519",
+//     "about": "@123",
        // avatarLink is the hash of the file
 //     "avatarLink": "E21vi/w190Gmg+cfO5WXh6r6iYTzQkWUL9ah6shs4kc="
 //   }

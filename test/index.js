@@ -3,6 +3,8 @@ var fs = require('fs')
 var test = require('tape')
 var avatar = require('../avatar')
 
+var keys = { public: '123' }
+
 test('post an avatar', function (t) {
     // read binary data
     var file = 'data:image/png;base64,' +
@@ -10,9 +12,9 @@ test('post an avatar', function (t) {
             encoding: 'base64'
         })
 
-    avatar.post({ public: '123' }, file)
+    avatar.post(keys, file)
         .then(() => {
-            t.pass('created an avatar document')
+            t.pass('should create an avatar document')
             t.end()
         })
         .catch(err => {
@@ -24,7 +26,7 @@ test('post an avatar', function (t) {
 test('get an avatar', function (t) {
     t.plan(1)
 
-    avatar.get('@123')
+    avatar.get('@' + keys.public)
         .then(res => {
             t.equal(res.data.about, '@123', 'should return the right' +
                 ' public id in `get` request')
