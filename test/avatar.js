@@ -3,6 +3,8 @@ var fs = require('fs')
 var test = require('tape')
 var avatar = require('../avatar')
 
+// you can post any avatar for the time being,
+// the server doesn't verify the msg
 var keys = { public: '123' }
 
 test('post an avatar', function (t) {
