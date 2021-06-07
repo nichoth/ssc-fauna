@@ -1,4 +1,3 @@
-require('dotenv').config()
 var faunadb = require('faunadb')
 var createHash = require('crypto').createHash
 

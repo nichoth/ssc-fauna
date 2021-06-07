@@ -2,25 +2,37 @@
 
 SSC db built with [fauna db](https://fauna.com/)
 
-
 ---------------------------------------------------
 
+## env variables
 1. Make a DB in fauna and put the secret key in `.env`.
-
-This secret key determines which DB the tests will use if you run them
+The secret key determines which DB it will use
 
 .env
 ```
 FAUNADB_SERVER_SECRET="123"
 ```
 
-## example
+You can copy `.env.example` to `.env` and change the value of the secret.
 
-### create indexes
-first create the necessary indexes by running `script.js`
+--------------------------------------------
+
+## prepare the DB
+first create the necessary collections and indexes by running `script.js`
 ```
 $ node script.js
 ```
+
+----------------------------------------
+
+## test
+```
+$ npm test
+```
+
+---------------------------------------
+
+## example
 
 ### avatar
 
