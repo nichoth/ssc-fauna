@@ -1,6 +1,6 @@
 # SSC fauna
 
-SSC db built with [fauna db](https://fauna.com/)
+SSC database built with [fauna db](https://fauna.com/)
 
 ---------------------------------------------------
 

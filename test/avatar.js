@@ -5,6 +5,7 @@ var avatar = require('../avatar')
 
 // you can post any avatar for the time being,
 // the server doesn't verify the msg
+// TODO -- should verify msg
 var keys = { public: '123' }
 
 test('post an avatar', function (t) {
@@ -31,9 +32,10 @@ test('get an avatar', function (t) {
     avatar.get('@' + keys.public)
         .then(res => {
             t.equal(res.data.about, '@123', 'should return the right' +
-                ' public id in `get` request')
+                ' public id from `get` request')
         })
         .catch(err => t.error(err))
 })
 
+// TODO -- post an additional avatar
 

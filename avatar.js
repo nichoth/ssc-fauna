@@ -21,11 +21,6 @@ function post (keys, file) {
             q.IsEmpty(
                 q.Match(q.Index('avatar-by-id'), '@' + keys.public)
             ),
-            // q.Exists(
-            //     q.Select('ref', q.Get(
-            //         q.Match(q.Index('avatar-by-id'), '@' + keys.public)
-            //     ))
-            // ),
             q.Create(
                 q.Collection('avatar'),
                 { data: { about: '@' + keys.public, avatarLink: hash } },
