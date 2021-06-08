@@ -10,6 +10,7 @@
     "test": "tape test/*.js | tap-spec"
   },
   "dependencies": {
+    "@nichoth/ssc": "^0.0.9",
     "faunadb": "^4.3.0"
   },
   "devDependencies": {

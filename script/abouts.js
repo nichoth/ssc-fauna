@@ -5,6 +5,7 @@ var client = new faunadb.Client({
     secret: process.env.FAUNADB_SERVER_SECRET
 })
 
+// this is for setting your username
 function createAbouts () {
     client.query(
         q.CreateCollection({ name: 'abouts' })
@@ -12,14 +13,17 @@ function createAbouts () {
         .then((ret) => {
             createIndex()
         })
-        .catch((err) => console.error('Error: %s', err))
+        .catch((err) => {
+            console.error('oooooooo', err)
+            createIndex()
+        })
 
     function createIndex () {
         return client.query(
             q.CreateIndex({
                 name: 'about-by-author',
                 source: q.Collection('abouts'),
-                terms: [{ field: ['data', 'about'] }],
+                terms: [{ field: ['data', 'value', 'author'] }],
             })
         )
     }

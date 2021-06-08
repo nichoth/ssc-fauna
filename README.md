@@ -18,9 +18,11 @@ You can copy `.env.example` to `.env` and change the value of the secret.
 --------------------------------------------
 
 ## prepare the DB
-first create the necessary collections and indexes by running `script.js`
+first create the necessary collections and indexes by
+running `script/index.js`
+
 ```
-$ node script.js
+$ node script
 ```
 
 ----------------------------------------
