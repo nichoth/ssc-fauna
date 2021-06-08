@@ -1,0 +1,2 @@
+require('./abouts')()
+require('./avatar')()
