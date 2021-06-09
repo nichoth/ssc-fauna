@@ -1,5 +1,4 @@
 require('dotenv').config()
-// var fs = require('fs')
 var test = require('tape')
 var abouts = require('../abouts')
 var ssc = require('@nichoth/ssc')
@@ -19,7 +18,6 @@ test('create the user name', function (t) {
 
     abouts.post(keys, msg)
         .then((res) => {
-            // console.log('in here res', res)
             t.pass('should create an about document')
             t.equal(res.value.author, keys.id,
                 'should have the right user ID')
