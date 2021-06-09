@@ -21,7 +21,8 @@ test('create the user name', function (t) {
         .then((res) => {
             // console.log('in here res', res)
             t.pass('should create an about document')
-            t.equal(res.value.author, keys.id, 'should have the right user ID')
+            t.equal(res.value.author, keys.id,
+                'should have the right user ID')
             t.end()
         })
         .catch(err => {
@@ -35,7 +36,8 @@ test('get the user name', function (t) {
     abouts.get(keys.id)
         .then(res => {
             // console.log('got res in test', res)
-            t.equal(res.value.author, keys.id, 'should have the right user ID')
+            t.equal(res.value.author, keys.id,
+                'should have the right user ID')
             t.equal(res.value.content.name, 'fooo',
                 'should have the right user name')
             t.end()
@@ -46,3 +48,7 @@ test('get the user name', function (t) {
             t.end()
         })
 })
+
+// TODO
+// test for an invalid message
+// the API function should return an error

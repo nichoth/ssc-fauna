@@ -24,27 +24,3 @@ Promise.all([
     require('./avatar')()
 })
 .catch((err) => console.error('aaaaaaaa: %s', err))
-
-
-
-// client.query(
-//     q.Delete( q.Collection('abouts') )
-// )
-//     .then((ret) => {
-//         console.log('del', ret)
-//         delAvatar()
-//     })
-//     .catch((err) => console.error('Error: %s', err))
-
-// function delAvatar () {
-//     client.query(
-//         q.Delete( q.Ref(q.Collection('avatar')) )
-//     )
-//         .then((ret) => {
-//             console.log('del', ret)
-//             require('./abouts')()
-//             require('./avatar')()
-//         })
-//         .catch((err) => console.error('Error: %s', err))
-// }
-
