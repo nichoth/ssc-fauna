@@ -6,6 +6,8 @@ var client = new faunadb.Client({
     secret: process.env.FAUNADB_SERVER_SECRET
 })
 
+// for setting and getting your user name
+
 async function get (author) {
     // console.log('***author***', author)
 

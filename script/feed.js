@@ -14,13 +14,23 @@ function createFeed () {
         .catch((err) => console.error('Error: %s', err))
 
     function createIndex () {
-        return client.query(
+        var key = client.query(
+            q.CreateIndex({
+                name: 'key',
+                source: q.Collection('posts'),
+                terms: [{ field: ['data', 'key'] }]
+            })
+        )
+
+        var auth = client.query(
             q.CreateIndex({
                 name: 'author',
                 source: q.Collection('posts'),
                 terms: [{ field: ['data', 'value', 'author'] }]
             })
         )
+
+        return Promise.all([key, auth])
     }
 }
 
