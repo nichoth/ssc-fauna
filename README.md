@@ -8,7 +8,8 @@ SSC database built with [fauna db](https://fauna.com/)
 1. Make a DB in fauna and put the secret key in `.env`.
 The secret key determines which DB it will use
 
-.env
+`.env` example:
+
 ```
 FAUNADB_SERVER_SECRET="123"
 CLOUDINARY_CLOUD_NAME="me"
