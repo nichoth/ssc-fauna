@@ -7,6 +7,7 @@ var fs = require('fs')
 var keys = ssc.createKeys()
 var { get, postOneMsg } = feed
 
+
 test('get a feed', function (t) {
     get(keys.id)
         .then(res => {
@@ -30,11 +31,25 @@ test('post one message', function (t) {
 
     postOneMsg(keys, msg, file)
         .then(res => {
-            // console.log('res', res)
             t.equal(res.value.sequence, 1, 'should be the first message')
             t.equal(res.value.content.text, 'woooo', 'should have the right' +
                 'content')
             t.ok(res.mentionUrls, 'should have img url')
+            t.end()
+        })
+        .catch(err => {
+            t.error(err)
+            t.end()
+        })
+})
+
+test('get the feed again', function (t) {
+    get(keys.id)
+        .then(res => {
+            t.ok(res, 'got a response')
+            t.equal(res.length, 1, 'should have 1 array item')
+            t.equal(res[0].value.content.text, 'woooo', 'should have the ' +
+                'right content')
             t.end()
         })
         .catch(err => {

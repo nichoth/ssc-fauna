@@ -18,7 +18,7 @@ function createFeed () {
             q.CreateIndex({
                 name: 'author',
                 source: q.Collection('posts'),
-                terms: [{ field: ['data'] }],
+                terms: [{ field: ['data', 'value', 'author'] }]
             })
         )
     }

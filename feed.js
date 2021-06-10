@@ -26,6 +26,7 @@ function get (author) {
         )
     )
         .then(function (res) {
+
             return res.data.map(post => {
                 var mentionUrls = post.data.value.content
                     .mentions.map(mention => {
@@ -114,7 +115,6 @@ function postOneMsg (keys, msg, file) {
         .catch(err => {
             if (err.name === 'NotFound') {
                 // write the msg b/c the feed is new
-                // console.log('**in err**', slugifiedHash, _hash)
                 return msgAndFile(msg, file, slugifiedHash, _hash)
                     .then(res => {  
                         var slugslug = encodeURIComponent(slugifiedHash)
