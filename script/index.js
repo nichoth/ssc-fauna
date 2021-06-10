@@ -5,6 +5,7 @@ var client = new faunadb.Client({
     secret: process.env.FAUNADB_SERVER_SECRET
 })
 
+// delete existing collections
 Promise.all([
     client.query(
         q.If(q.Exists( q.Collection('abouts') ), 
@@ -17,10 +18,17 @@ Promise.all([
             q.Delete( q.Collection('avatar') ),
             'was false'
         )
+    ),
+    client.query(
+        q.If(q.Exists( q.Collection('posts') ), 
+            q.Delete( q.Collection('posts') ),
+            'was false'
+        )
     )
 ])
 .then(() => {
     require('./abouts')()
     require('./avatar')()
+    require('./feed')()
 })
 .catch((err) => console.error('aaaaaaaa: %s', err))

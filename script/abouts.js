@@ -7,7 +7,7 @@ var client = new faunadb.Client({
 
 // this is for setting your username
 function createAbouts () {
-    client.query(
+    return client.query(
         q.CreateCollection({ name: 'abouts' })
     )
         .then((ret) => {

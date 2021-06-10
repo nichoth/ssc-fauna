@@ -1,4 +1,3 @@
-require('dotenv').config()
 var faunadb = require('faunadb')
 var q = faunadb.query
 var client = new faunadb.Client({
@@ -6,23 +5,23 @@ var client = new faunadb.Client({
 })
 
 function createAvatarStuff () {
-  client.query(
-    q.CreateCollection({ name: 'avatar' })
-  )
-      .then((ret) => {
-          createIndex()
-      })
-      .catch((err) => console.error('Error: %s', err))
+    return client.query(
+        q.CreateCollection({ name: 'avatar' })
+    )
+    .then((ret) => {
+        createIndex()
+    })
+    .catch((err) => console.error('Error: %s', err))
 
-  function createIndex () {
-      return client.query(
-        q.CreateIndex({
-          name: 'avatar-by-id',
-          source: q.Collection('avatar'),
-          terms: [{ field: ['data', 'about'] }],
-        })
-      )
-  }
+    function createIndex () {
+        return client.query(
+            q.CreateIndex({
+                name: 'avatar-by-id',
+                source: q.Collection('avatar'),
+                terms: [{ field: ['data', 'about'] }],
+            })
+        )
+    }
 }
 
 module.exports = createAvatarStuff
