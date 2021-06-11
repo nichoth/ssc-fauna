@@ -6,6 +6,22 @@ var ssc = require('@nichoth/ssc')
 var keys = ssc.createKeys()
 var userTwo = ssc.createKeys()
 
+test('get the list of follows', function (t) {
+    follow.get(keys.id)
+        .then(res => {
+            // console.log('got res in test')
+            // console.log(res)
+
+            t.equal(Object.keys(res).length, 0, 'should return an empty list')
+            t.end()
+        })
+        .catch(err => {
+            console.log('boooooooooo', err)
+            t.error(err)
+            t.end()
+        })
+})
+
 test('follow a user', function (t) {
     var msgContent = {
         type: 'follow',
