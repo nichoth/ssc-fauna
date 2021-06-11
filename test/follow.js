@@ -35,18 +35,12 @@ test('follow a user', function (t) {
 test('get the list of follows', function (t) {
     follow.get(keys.id)
         .then(res => {
-            console.log('got res in test')
-            console.log(res)
-            console.log(res[0].value)
+            // console.log('got res in test')
+            // console.log(res)
 
-            t.equal(res.length, 1, 'should return an array')
-
-            // could reduce the list server-side, do you would get
-            // a map of id to profile
-            // { '123': profile }
-
-            // we should get back an array i think
-            // then you want to reduce the array to a proper list
+            t.ok(res[keys.id], 'should return a map')
+            t.equal(res[keys.id].value.author, keys.id,
+                'should have the right follow data')
 
             t.end()
         })

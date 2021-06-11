@@ -26,9 +26,13 @@ function get (author) {
         )
     )
         .then(res => {
-            return res.data.map(res => {
-                return res.data
-            })
+            // return res.data.map(doc => doc.data)
+            var map = res.data.reduce((acc, doc) => {
+                acc[doc.data.value.author] = doc.data
+                return acc
+            }, {})
+
+            return map
         })
 }
 
