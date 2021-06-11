@@ -16,12 +16,27 @@ var client = new faunadb.Client({
 // following: true 
 // }
 
-async function follow (author, keys, msg) {
+function get (author) {
+    return client.query(
+        q.Map(
+            q.Paginate(
+                q.Reverse( q.Match(q.Index('following'), author) )
+            ),
+            q.Lambda( 'followMsg', q.Get(q.Var('followMsg')) )
+        )
+    )
+        .then(res => {
+            return res.data.map(res => {
+                return res.data
+            })
+        })
+}
 
+async function post (author, keys, msg) {
     try {
         var lastFollowMsg = await client.query(
             q.Get(
-                q.Match(q.Index('follows'), author)
+                q.Match(q.Index('following'), author)
             )
         );
     } catch (err) {
@@ -57,4 +72,4 @@ async function follow (author, keys, msg) {
 
 }
 
-module.exports = { post: follow }
+module.exports = { post, get }

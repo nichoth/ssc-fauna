@@ -16,7 +16,7 @@ test('follow a user', function (t) {
     // need to create a msg for post req
     var msg = ssc.createMsg(keys, null, msgContent)
 
-    follow.post(keys, msg)
+    follow.post(keys.id, keys, msg)
         .then((res) => {
             t.pass('should create a follow document')
             t.equal(res.value.author, keys.id,
@@ -35,11 +35,19 @@ test('follow a user', function (t) {
 test('get the list of follows', function (t) {
     follow.get(keys.id)
         .then(res => {
-            console.log('got res in test', res)
-            // t.equal(res.value.author, keys.id,
-            //     'should have the right user ID')
-            // t.equal(res.value.content.name, 'fooo',
-            //     'should have the right user name')
+            console.log('got res in test')
+            console.log(res)
+            console.log(res[0].value)
+
+            t.equal(res.length, 1, 'should return an array')
+
+            // could reduce the list server-side, do you would get
+            // a map of id to profile
+            // { '123': profile }
+
+            // we should get back an array i think
+            // then you want to reduce the array to a proper list
+
             t.end()
         })
         .catch(err => {

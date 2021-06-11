@@ -30,7 +30,7 @@ function createAbouts () {
     function createIndex () {
         return client.query(
             q.CreateIndex({
-                name: 'follows',
+                name: 'following',
                 source: q.Collection('follow'),
                 terms: [{ field: ['data', 'value', 'author'] }]
             })

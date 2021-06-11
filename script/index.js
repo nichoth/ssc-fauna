@@ -30,5 +30,6 @@ Promise.all([
     require('./abouts')()
     require('./avatar')()
     require('./feed')()
+    require('./follow')()
 })
 .catch((err) => console.error('aaaaaaaa: %s', err))
