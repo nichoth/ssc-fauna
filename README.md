@@ -77,7 +77,6 @@ post({ public: '123' }, file)
 ```
 
 ### feed
-
 Post and get messages
 
 ```js
@@ -215,7 +214,7 @@ test('get the user name', function (t) {
 ```js
 require('dotenv').config()
 var test = require('tape')
-var follow = require('../follow')
+var follow = require('@nichoth/ssc-fauna/follow')
 var ssc = require('@nichoth/ssc')
 var keys = ssc.createKeys()
 var userTwo = ssc.createKeys()
