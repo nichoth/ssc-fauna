@@ -18,7 +18,7 @@ CLOUDINARY_API_SECRET="example-secret"
 CLOUDINARY_API_KEY="123"
 ```
 
-You can copy `.env.example` to `.env` and change the value of the secret.
+You can copy `.env.example` to `.env` and change the value of the secrets.
 
 --------------------------------------------
 
@@ -30,13 +30,13 @@ running `script/index.js`
 $ node script
 ```
 
-
 This will create several collections and indexes in the database --
 
 `posts / author` -- get a feed by author id
 `posts / key` -- get a specific post by its key
 `avatar / avatar-by-id` -- get an avatar by user id
 `abouts / about-by-author` -- get a username byt the user id
+`follow / follows` -- who is the `author` following?
 
 
 ----------------------------------------
