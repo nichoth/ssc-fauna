@@ -64,9 +64,8 @@ test('get the feed again', function (t) {
 test('get a single post', function (t) {
     singlePost.get(postKey)
         .then(res => {
-            // console.log('res', res)
             t.equal(res.value.content.text, 'woooo', 'should have the ' +
-                'right content')
+                'right content in the response')
             t.end()
         }) 
         .catch(err => {

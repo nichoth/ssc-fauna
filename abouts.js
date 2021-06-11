@@ -32,7 +32,6 @@ async function get (author) {
 }
 
 // for setting your user name
-
 async function post (keys, msg) {
 
     // get an existing about feed

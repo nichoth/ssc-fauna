@@ -12,6 +12,9 @@ function get (aboutWho) {
     )
 }
 
+// TODO --  we should take a message and verify that the signature is ok
+// before we set the avatar
+
 // either create or replace the existing avatar
 function post (keys, file) {
     var hash = getHash(file)
