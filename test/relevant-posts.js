@@ -38,13 +38,21 @@ test('get relevant posts', function (t) {
         feedProm
     ])
         .then((res) => {
-            // console.log('***res***', JSON.stringify(res, null, 2))
-            // console.log('**content**', res[0].value.content)
             t.ok(res, 'got a response')
-            doTheTest()
-            // t.equal(res[1].length, 1, 'should have 1 message')
-            // t.end()
-        })
+
+            relevantPosts.get(keys.id)
+                .then(res => {
+                    // console.log('*****data****', JSON.stringify(res, null, 2))
+                    t.equal(res.length, 1, 'should return 1 thing')
+                    t.equal(res[0].value.author, keys.id,
+                        'should be the right author id')
+                    t.end()
+                })
+                .catch(err => {
+                    t.error(err)
+                    t.end()
+                })
+            })
         .catch(err => {
             console.log('errr oh no', err)
             t.error(err)
@@ -56,14 +64,7 @@ test('get relevant posts', function (t) {
 
 
     function doTheTest () {
-        relevantPosts.get(keys.id)
-            .then(res => {
-                // console.log('*****ressss****', JSON.stringify(res, null, 2))
-                // console.log('*****0000****', JSON.stringify(res[0], null, 2))
-                console.log('*****data****', JSON.stringify(res[0].data, null, 2))
-            })
     }
-
 
 
 })

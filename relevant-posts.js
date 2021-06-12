@@ -43,26 +43,30 @@ function get (id) {
     )
         .then(res => res.data.map(d => d.data))
         // data is an array
-        .then(data => {
-            console.log('aaaaaa data', data)
-            return data
-        })
+        // .then(data => {
+        //     console.log('aaaaaa data', data)
+        //     return data
+        // })
         // data is now an array of the msg objects
         .then(arr => {
-            console.log('aaarrrrr', arr)
-            console.log('aaarrrrr content', arr[0].value.content)
+            // console.log('aaarrrrr', arr)
+            // console.log('aaarrrrr content', arr[0].value.content)
             return client.query(
                 q.Map(
                     q.Paginate(
                         q.Union(
+                            // include your own id
                             q.Match(q.Index('author'), id),
+                            // TODO -- get everyone's feed in the response
+                            // above (the `arr` variable)
                             q.Match(q.Index('author'), arr[0].value.content.contact)
                         )
                     ),
                     q.Lambda('post', q.Get(q.Var('post')))
                 )
             )
-                .then(res => res.data)
+                .then(res => res.data.map(d => d.data))
+                // .then(ds => ds.map(d => d.data))
         })
 
         // .then(res => {
