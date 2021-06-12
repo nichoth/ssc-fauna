@@ -262,3 +262,11 @@ test('get the list of who you are following', function (t) {
         })
 })
 ```
+
+--------------------------------------------
+
+[fauna social graph docs](https://docs.fauna.com/fauna/current/tutorials/social_graph?lang=javascript)
+
+
+
+[example query](https://github.com/fauna-labs/fwitter/blob/main/src/fauna/queries/fweets.js#L364)

@@ -26,6 +26,7 @@ function get (author) {
         )
     )
         .then(res => {
+            // should get the avatar & profile info for each item in the array
             // return res.data.map(doc => doc.data)
             var map = res.data.reduce((acc, doc) => {
                 acc[doc.data.value.author] = doc.data
