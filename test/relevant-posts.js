@@ -11,7 +11,6 @@ var userTwo = ssc.createKeys()
 
 test('get relevant posts', function (t) {
 
-    // ------------------ test follow content -------------
     var msgContent = {
         type: 'follow',
         contact: userTwo.id,
@@ -58,13 +57,5 @@ test('get relevant posts', function (t) {
             t.error(err)
             t.end()
         })
-
-    // -------------------- /test follow content -------------
-
-
-
-    function doTheTest () {
-    }
-
 
 })
