@@ -1,9 +1,9 @@
 require('dotenv').config()
 var test = require('tape')
 var ssc = require('@nichoth/ssc')
+var fs = require('fs')
 var relevantPosts = require('../relevant-posts')
 var follow = require('../follow')
-var fs = require('fs')
 var { postOneMsg } = require('../feed')
 
 var keys = ssc.createKeys()
@@ -35,7 +35,7 @@ test('get relevant posts', function (t) {
     Promise.all([
         followProm,
         feedProm
-    ])
+    ])  // we are now following a feed with 1 post
         .then((res) => {
             t.ok(res, 'got a response')
 
