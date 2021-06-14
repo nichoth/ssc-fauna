@@ -23,9 +23,7 @@ test('get relevant posts', function (t) {
     // create a `post` msg
     var msg2 = ssc.createMsg(userTwo, null, {
         type: 'test',
-        text: 'woooo',
-        // TODO
-        mentions: []
+        text: 'woooo'
     })
 
     var file = 'data:image/png;base64,' +
@@ -54,10 +52,19 @@ test('get relevant posts', function (t) {
                     t.equal(res.length, 1, 'should return 1 thing')
 
                     t.equal(res[0].key, ssc.getId(res[0].value),
-                        'should return the right message')
+                        '`getId` returns the right key')
+
+                    // TODO
+                    // t.equal(res[0].key, ssc.getId(msg2),
+                    //     'should have the rihgt key in the message')
 
                     t.equal(res[0].value.author, userTwo.id,
                         'should be the right author id')
+
+                    // TODO -- should test with a message with the 
+                    // `mentions` array in it
+                    // (should get the `mentions` hash client side)
+
                     t.end()
                 })
                 .catch(err => {
@@ -71,4 +78,11 @@ test('get relevant posts', function (t) {
             t.end()
         })
 
+})
+
+test('relevant +1', function (t) {
+    // todo
+    // post something to your own feed and verify that it's returned
+    // in the result
+    t.end()
 })
