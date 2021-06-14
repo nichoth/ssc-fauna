@@ -43,7 +43,23 @@ test('get relevant posts', function (t) {
             relevantPosts.get(keys.id)
                 .then(res => {
                     // console.log('*****data****', JSON.stringify(res, null, 2))
+                    console.log('resssss', JSON.stringify(res, null, 2))
+                    console.log('------------------------')
+                    console.log('msg', JSON.stringify(msg2, null, 2))
+                    // console.log('msgsgsgsg', msg, msg2)
+                    // console.log('contenttttt', res[0].value.content)
+
                     t.equal(res.length, 1, 'should return 1 thing')
+
+                    res[0].value.previous = null
+
+                    t.equal(res[0].key, ssc.getId(res[0].value),
+                        'should return the right message')
+                    // t.equal(res[0].key, ssc.getId(msg2),
+                    //     'should return the right message')
+                    // t.equal(res[0].key, ssc.getId(msg),
+                    //     'should return the right message')
+
                     t.equal(res[0].value.author, userTwo.id,
                         'should be the right author id')
                     t.end()
