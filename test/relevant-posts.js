@@ -10,18 +10,23 @@ var keys = ssc.createKeys()
 var userTwo = ssc.createKeys()
 
 test('get relevant posts', function (t) {
-
     var msgContent = {
         type: 'follow',
         contact: userTwo.id,
         author: keys.id
     }
 
-    // need to create a msg for post req
+    // create a `follow` msg
     var msg = ssc.createMsg(keys, null, msgContent)
     var followProm = follow.post(keys.id, keys, msg)
 
-    var msg2 = ssc.createMsg(userTwo, null, { type: 'test', text: 'woooo' })
+    // create a `post` msg
+    var msg2 = ssc.createMsg(userTwo, null, {
+        type: 'test',
+        text: 'woooo',
+        // TODO
+        mentions: []
+    })
 
     var file = 'data:image/png;base64,' +
         fs.readFileSync(__dirname + '/caracal.jpg', {
@@ -42,23 +47,14 @@ test('get relevant posts', function (t) {
 
             relevantPosts.get(keys.id)
                 .then(res => {
-                    // console.log('*****data****', JSON.stringify(res, null, 2))
                     console.log('resssss', JSON.stringify(res, null, 2))
                     console.log('------------------------')
                     console.log('msg', JSON.stringify(msg2, null, 2))
-                    // console.log('msgsgsgsg', msg, msg2)
-                    // console.log('contenttttt', res[0].value.content)
 
                     t.equal(res.length, 1, 'should return 1 thing')
 
-                    res[0].value.previous = null
-
                     t.equal(res[0].key, ssc.getId(res[0].value),
                         'should return the right message')
-                    // t.equal(res[0].key, ssc.getId(msg2),
-                    //     'should return the right message')
-                    // t.equal(res[0].key, ssc.getId(msg),
-                    //     'should return the right message')
 
                     t.equal(res[0].value.author, userTwo.id,
                         'should be the right author id')
