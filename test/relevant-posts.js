@@ -1,4 +1,5 @@
 require('dotenv').config()
+var createHash = require('crypto').createHash
 var test = require('tape')
 var ssc = require('@nichoth/ssc')
 var fs = require('fs')
@@ -20,20 +21,29 @@ test('get relevant posts', function (t) {
     var msg = ssc.createMsg(keys, null, msgContent)
     var followProm = follow.post(keys.id, keys, msg)
 
-    // create a `post` msg
-    var msg2 = ssc.createMsg(userTwo, null, {
-        type: 'test',
-        text: 'woooo'
-    })
-
+    // get the hash of the file
     var file = 'data:image/png;base64,' +
         fs.readFileSync(__dirname + '/caracal.jpg', {
             encoding: 'base64'
         })
 
+
+    // for the `mentions` array
+    var hash = createHash('sha256')
+    hash.update(file)
+    var _hash = hash.digest('base64')
+    // var slugifiedHash = encodeURIComponent('' + _hash)
+
+
+    // create a `post` msg
+    var msg2 = ssc.createMsg(userTwo, null, {
+        type: 'test',
+        text: 'woooo',
+        mentions: [_hash]
+    })
+
     // add some msgs so userTwo has a feed
     var feedProm = postOneMsg(userTwo, msg2, file)
-
 
     Promise.all([
         followProm,
@@ -55,8 +65,8 @@ test('get relevant posts', function (t) {
                         '`getId` returns the right key')
 
                     // TODO
-                    // t.equal(res[0].key, ssc.getId(msg2),
-                    //     'should have the rihgt key in the message')
+                    t.equal(res[0].key, ssc.getId(msg2),
+                        'should have the rihgt key in the message')
 
                     t.equal(res[0].value.author, userTwo.id,
                         'should be the right author id')
