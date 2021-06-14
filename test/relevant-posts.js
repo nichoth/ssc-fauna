@@ -35,6 +35,12 @@ test('get relevant posts', function (t) {
     // var slugifiedHash = encodeURIComponent('' + _hash)
 
 
+
+
+    // server-side, put the file-hash into the msg, then we get the key
+    // for the msg
+
+
     // create a `post` msg
     var msg2 = ssc.createMsg(userTwo, null, {
         type: 'test',
@@ -64,16 +70,11 @@ test('get relevant posts', function (t) {
                     t.equal(res[0].key, ssc.getId(res[0].value),
                         '`getId` returns the right key')
 
-                    // TODO
                     t.equal(res[0].key, ssc.getId(msg2),
-                        'should have the rihgt key in the message')
+                        'should have the same key from the message')
 
                     t.equal(res[0].value.author, userTwo.id,
                         'should be the right author id')
-
-                    // TODO -- should test with a message with the 
-                    // `mentions` array in it
-                    // (should get the `mentions` hash client side)
 
                     t.end()
                 })
@@ -91,7 +92,7 @@ test('get relevant posts', function (t) {
 })
 
 test('relevant +1', function (t) {
-    // todo
+    // TODO
     // post something to your own feed and verify that it's returned
     // in the result
     t.end()
