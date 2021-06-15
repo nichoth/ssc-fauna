@@ -5,6 +5,7 @@ var ssc = require('@nichoth/ssc')
 
 var keys = ssc.createKeys()
 var userTwo = ssc.createKeys()
+var userThree = ssc.createKeys()
 
 test('get the list of follows', function (t) {
     follow.get(keys.id)
@@ -22,6 +23,8 @@ test('get the list of follows', function (t) {
         })
 })
 
+var msg
+
 test('follow a user', function (t) {
     var msgContent = {
         type: 'follow',
@@ -30,7 +33,7 @@ test('follow a user', function (t) {
     }
 
     // need to create a msg for post req
-    var msg = ssc.createMsg(keys, null, msgContent)
+    msg = ssc.createMsg(keys, null, msgContent)
 
     follow.post(keys.id, keys, msg)
         .then((res) => {
@@ -38,6 +41,30 @@ test('follow a user', function (t) {
             t.equal(res.value.author, keys.id,
                 'should have the right user ID')
             t.equal(res.value.content.contact, userTwo.id,
+                'should have the right contact in the message')
+            t.end()
+        })
+        .catch(err => {
+            console.log('***** err', err)
+            t.error(err)
+            t.end()
+        })
+})
+
+test('follow another user', function (t) {
+    var msgContent = {
+        type: 'follow',
+        contact: userThree.id,
+        author: keys.id
+    }
+
+    var msg2 = ssc.createMsg(keys, msg, msgContent)
+    follow.post(keys.id, keys, msg2)
+        .then((res) => {
+            t.pass('should create a follow document')
+            t.equal(res.value.author, keys.id,
+                'should have the right user ID')
+            t.equal(res.value.content.contact, userThree.id,
                 'should have the right contact in the message')
             t.end()
         })

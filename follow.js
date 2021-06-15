@@ -39,27 +39,29 @@ function get (author) {
 }
 
 async function post (author, keys, msg) {
-    try {
-        var lastFollowMsg = await client.query(
-            q.Get(
-                q.Match(q.Index('following'), author)
-            )
-        );
-    } catch (err) {
-        if (err.message === 'instance not found') {
-            // this means it's a new string of 'follow' msgs
-            // and there is no ancestor
-            // console.log('~~~~~ not found ~~~~~')
-            var lastFollowMsg = null
-        } else {
-            throw err
-        }
-    }
+    // try {
+    //     var lastFollowMsg = await client.query(
+    //         q.Get(
+    //             q.Match(q.Index('following'), author)
+    //         )
+    //     );
+    // } catch (err) {
+    //     if (err.message === 'instance not found') {
+    //         // this means it's a new string of 'follow' msgs
+    //         // and there is no ancestor
+    //         // console.log('~~~~~ not found ~~~~~')
+    //         var lastFollowMsg = null
+    //     } else {
+    //         throw err
+    //     }
+    // }
 
-    var lastMsg = lastFollowMsg ? lastFollowMsg.data : null
+    // var lastMsg = lastFollowMsg ? lastFollowMsg.data.value : null
+
+    // console.log('last follow*****', lastMsg)
 
     try {
-        var isValid = sc.verifyObj(keys, lastMsg, msg)
+        var isValid = ssc.verifyObj(keys, null, msg)
     } catch (err) {
         console.log('not isvalid', isValid, err)
         throw err
