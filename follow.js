@@ -56,8 +56,10 @@ async function post (author, keys, msg) {
         }
     }
 
+    var lastMsg = lastFollowMsg ? lastFollowMsg.data : null
+
     try {
-        var isValid = ssc.verifyObj(keys, lastFollowMsg || null, msg)
+        var isValid = sc.verifyObj(keys, lastMsg, msg)
     } catch (err) {
         console.log('not isvalid', isValid, err)
         throw err
