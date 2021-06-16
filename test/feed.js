@@ -23,7 +23,17 @@ test('get a feed', function (t) {
 })
 
 test('post one message', function (t) {
+
+
+
+
+
+    // TODO -- need to add the mentions array
     var msg = ssc.createMsg(keys, null, { type: 'test', text: 'woooo' })
+
+
+
+
 
     var file = 'data:image/png;base64,' +
         fs.readFileSync(__dirname + '/caracal.jpg', {

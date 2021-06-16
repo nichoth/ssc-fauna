@@ -151,11 +151,14 @@ function postOneMsg (keys, msg, file) {
 
     function writeMsg (_msg, hash) {
         // we are creating the msg and hash server side here
-        var msg = xtend(_msg, {
-            content: xtend(_msg.content, {
-                mentions: [hash]
-            })
-        })
+        // var msg = xtend(_msg, {
+        //     content: xtend(_msg.content, {
+        //         mentions: [hash]
+        //     })
+        // })
+
+        // should just use the existing hash that was created client side
+        var msg = _msg
 
         // console.log('msg in herererererere', msg)
 

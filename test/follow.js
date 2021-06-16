@@ -80,6 +80,9 @@ test('get the list of follows', function (t) {
         .then(res => {
             // console.log('******res', res)
 
+            // should return a map of { userID => profile data }
+            // where `userID` is a person you are following
+
             t.ok(res[userTwo.id], 'should return a map')
             t.equal(res[userTwo.id].value.author, keys.id,
                 'should have the right follow data')
