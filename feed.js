@@ -75,6 +75,8 @@ function postOneMsg (keys, msg, file) {
     var _hash = hash.digest('base64')
     var slugifiedHash = encodeURIComponent('' + _hash)
 
+    // console.log('????', msg.content.mentions[0] === _hash)
+
     // get an existing feed
     // to check if the merkle list matches up
     return client.query(
@@ -157,8 +159,16 @@ function postOneMsg (keys, msg, file) {
         //     })
         // })
 
+
+
+
+
         // should just use the existing hash that was created client side
         var msg = _msg
+
+
+
+
 
         // console.log('msg in herererererere', msg)
 

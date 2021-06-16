@@ -4,6 +4,7 @@ var ssc = require('@nichoth/ssc')
 var fs = require('fs')
 var feed = require('../feed')
 var singlePost = require('../single-post')
+var createHash = require('crypto').createHash
 
 var keys = ssc.createKeys()
 var { get, postOneMsg } = feed
@@ -27,18 +28,26 @@ test('post one message', function (t) {
 
 
 
-
-    // TODO -- need to add the mentions array
-    var msg = ssc.createMsg(keys, null, { type: 'test', text: 'woooo' })
-
-
-
-
-
     var file = 'data:image/png;base64,' +
         fs.readFileSync(__dirname + '/caracal.jpg', {
             encoding: 'base64'
         })
+
+    var hash = createHash('sha256')
+    hash.update(file)
+    var _hash = hash.digest('base64')
+    // var slugifiedHash = encodeURIComponent('' + _hash)
+
+    // TODO -- need to add the mentions array
+    var msg = ssc.createMsg(keys, null, {
+        type: 'test',
+        text: 'woooo',
+        mentions: [_hash]
+    })
+
+
+
+
 
     postOneMsg(keys, msg, file)
         .then(res => {
