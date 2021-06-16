@@ -26,11 +26,13 @@ function get (author) {
         )
     )
         .then(res => {
+            // TODO
             // should get the avatar & profile info for each item in the array
             // return res.data.map(doc => doc.data)
             // TODO -- need to check the msg value for `following: false`
             var map = res.data.reduce((acc, doc) => {
-                acc[doc.data.value.author] = doc.data
+                acc[doc.data.value.author] =
+                    (acc[doc.data.value.author] || []).concat([doc.data]) 
                 return acc
             }, {})
 

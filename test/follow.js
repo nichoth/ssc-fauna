@@ -78,11 +78,10 @@ test('follow another user', function (t) {
 test('get the list of follows', function (t) {
     follow.get(keys.id)
         .then(res => {
-            // console.log('got res in test')
-            // console.log(res)
+            // console.log('******res', res)
 
             t.ok(res[keys.id], 'should return a map')
-            t.equal(res[keys.id].value.author, keys.id,
+            t.equal(res[keys.id][0].value.author, keys.id,
                 'should have the right follow data')
 
             t.end()
