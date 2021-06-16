@@ -31,8 +31,9 @@ function get (author) {
             // return res.data.map(doc => doc.data)
             // TODO -- need to check the msg value for `following: false`
             var map = res.data.reduce((acc, doc) => {
-                acc[doc.data.value.author] =
-                    (acc[doc.data.value.author] || []).concat([doc.data]) 
+                // TODO -- should be the person's profile data
+                // need to do another query to get the profile data
+                acc[doc.data.value.content.contact] = doc.data
                 return acc
             }, {})
 

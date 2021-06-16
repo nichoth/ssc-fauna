@@ -80,8 +80,8 @@ test('get the list of follows', function (t) {
         .then(res => {
             // console.log('******res', res)
 
-            t.ok(res[keys.id], 'should return a map')
-            t.equal(res[keys.id][0].value.author, keys.id,
+            t.ok(res[userTwo.id], 'should return a map')
+            t.equal(res[userTwo.id].value.author, keys.id,
                 'should have the right follow data')
 
             t.end()
