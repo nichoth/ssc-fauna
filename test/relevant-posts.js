@@ -22,7 +22,7 @@ test('get relevant posts', function (t) {
     var followProm = follow.post(keys.id, keys, msg)
 
     // get the hash of the file
-    var file = 'data:image/png;base64,' +
+    var file = 'data:image/jpg;base64,' +
         fs.readFileSync(__dirname + '/caracal.jpg', {
             encoding: 'base64'
         })
