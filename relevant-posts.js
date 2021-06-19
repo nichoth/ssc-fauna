@@ -26,10 +26,10 @@ function get (id) {
                     q.Paginate(
                         q.Union(
                             // include your own id
-                            [q.Match(q.Index('author'), id)].concat(
+                            [q.Reverse(q.Match(q.Index('author'), id))].concat(
                                 arr.map(post => {
-                                    return q.Match(q.Index('author'),
-                                        post.value.content.contact)
+                                    return q.Reverse(q.Match(q.Index('author'),
+                                        post.value.content.contact))
                                 })
                             )
                         )
@@ -48,3 +48,4 @@ function get (id) {
 }
 
 module.exports = { get }
+

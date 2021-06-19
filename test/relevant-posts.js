@@ -7,19 +7,19 @@ var relevantPosts = require('../relevant-posts')
 var follow = require('../follow')
 var { postOneMsg } = require('../feed')
 
-var keys = ssc.createKeys()
+var userOne = ssc.createKeys()
 var userTwo = ssc.createKeys()
 
 test('get relevant posts', function (t) {
     var msgContent = {
         type: 'follow',
         contact: userTwo.id,
-        author: keys.id
+        author: userOne.id
     }
 
     // create a `follow` msg
-    var msg = ssc.createMsg(keys, null, msgContent)
-    var followProm = follow.post(keys.id, keys, msg)
+    var msg = ssc.createMsg(userOne, null, msgContent)
+    var followProm = follow.post(userOne.id, userOne, msg)
 
     // get the hash of the file
     var file = 'data:image/jpg;base64,' +
@@ -27,14 +27,11 @@ test('get relevant posts', function (t) {
             encoding: 'base64'
         })
 
-
     // for the `mentions` array
     var hash = createHash('sha256')
     hash.update(file)
     var _hash = hash.digest('base64')
     // var slugifiedHash = encodeURIComponent('' + _hash)
-
-
 
 
     // server-side, put the file-hash into the msg, then we get the key
@@ -59,11 +56,12 @@ test('get relevant posts', function (t) {
             // we are now following a feed with 1 post
             t.ok(res, 'got a response')
 
-            relevantPosts.get(keys.id)
+            // here we get relevant posts
+            relevantPosts.get(userOne.id)
                 .then(res => {
-                    console.log('resssss', JSON.stringify(res, null, 2))
-                    console.log('------------------------')
-                    console.log('msg', JSON.stringify(msg2, null, 2))
+                    // console.log('resssss', JSON.stringify(res, null, 2))
+                    // console.log('------------------------')
+                    // console.log('msg', JSON.stringify(msg2, null, 2))
 
                     t.equal(res.length, 1, 'should return 1 thing')
 
