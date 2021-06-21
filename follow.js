@@ -116,7 +116,6 @@ function getNames (followed) {
         .catch(err => {
             console.log('***name errrrrrr', err)
         })
-        // q.Lambda('msg', q.Get(q.Var('msg')))
 }
 
 
