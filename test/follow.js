@@ -10,7 +10,7 @@ var userThree = ssc.createKeys()
 test('get the list of follows', function (t) {
     follow.get(keys.id)
         .then(res => {
-            console.log('********in here', res)
+            // console.log('********in here', res)
             // console.log('got res in test')
             // console.log(res)
 
@@ -84,11 +84,13 @@ test('get the list of follows', function (t) {
             // should return a map of { userID => profile data }
             // where `userID` is a person you are following
 
-            console.log('****res**** hrrrr', res)
+            // console.log('****res**** hrrrr', res)
 
             t.ok(res[userTwo.id], 'should return a map')
             t.equal(res[userTwo.id].id, userTwo.id,
-                'should have the right follow data')
+                'should have user two in the follow data')
+            t.equal(res[userThree.id].id, userThree.id,
+                'should have user three in the follow data')
 
             t.end()
         })

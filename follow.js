@@ -19,7 +19,7 @@ var client = new faunadb.Client({
 function get (author) {
     return getFollowed(author)
         .then(followed => {
-            console.log('******ooooo here', followed.map(res => res.data))
+            // console.log('******ooooo here', followed.map(res => res.data))
             var _followed = followed.map(res => {
                 return res.data.value.content.contact
             })
@@ -30,7 +30,7 @@ function get (author) {
             ])
         })
         .then(([followed, avas, names]) => {
-            console.log('****aaaaa fol, ava, names', followed, avas, names)
+            // console.log('****aaaaa fol, ava, names', followed, avas, names)
             var fols = followed.reduce((acc, doc, i) => {
                 // console.log('**doc**', doc)
                 acc[doc] = {
@@ -41,7 +41,7 @@ function get (author) {
                 return acc
             }, [])
 
-            console.log('**fols**', fols)
+            // console.log('**fols**', fols)
             // return [followed, avas, names]
             // var fold = followed.reduce((acc, fol) => {
             //     return acc
@@ -63,7 +63,7 @@ function getFollowed (author) {
 }
 
 function getAvatars (followed) {
-    console.log('in get avas', followed)
+    // console.log('in get avas', followed)
 
     return client.query(
         q.Map(
@@ -82,7 +82,7 @@ function getAvatars (followed) {
     )
         .then(res => {
             var _res = res.map(doc => doc.data)
-            console.log('ava res', _res)
+            // console.log('ava res', _res)
             return _res
         })
         .catch(err => {
@@ -91,7 +91,7 @@ function getAvatars (followed) {
 }
 
 function getNames (followed) {
-    console.log('in get names', followed)
+    // console.log('in get names', followed)
 
     return client.query(
         q.Map(
@@ -110,7 +110,7 @@ function getNames (followed) {
     )
         .then(res => {
             var _res = res.map(doc => doc.data)
-            console.log('**name res', _res)
+            // console.log('**name res', _res)
             return _res
         })
         .catch(err => {
