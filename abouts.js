@@ -16,7 +16,7 @@ async function get (author) {
             q.Get(
                 q.Match(q.Index('about-by-author'), author)
             )
-        );
+        )
     } catch (err) {
         if (err.message === 'instance not found') {
             // this means it's a new string of 'about' msgs

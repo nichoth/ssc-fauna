@@ -17,29 +17,134 @@ var client = new faunadb.Client({
 // }
 
 function get (author) {
+    return getFollowed(author)
+        .then(followed => {
+            console.log('******ooooo here', followed.map(res => res.data))
+            var _followed = followed.map(res => {
+                return res.data.value.content.contact
+            })
+            return Promise.all([
+                Promise.resolve(_followed),
+                getAvatars(_followed),
+                getNames(_followed)
+            ])
+        })
+        .then(([followed, avas, names]) => {
+            console.log('****aaaaa fol, ava, names', followed, avas, names)
+            var fols = followed.reduce((acc, doc, i) => {
+                // console.log('**doc**', doc)
+                acc[doc] = {
+                    id: doc,
+                    avatar: (avas && avas[i]) || null,
+                    name: (names && names[i]) || null
+                }
+                return acc
+            }, [])
+
+            console.log('**fols**', fols)
+            // return [followed, avas, names]
+            // var fold = followed.reduce((acc, fol) => {
+            //     return acc
+            // }, {})
+            return fols
+        })
+}
+
+function getFollowed (author) {
     return client.query(
         q.Map(
             q.Paginate(
-                q.Reverse( q.Match(q.Index('following'), author) )
+                q.Match(q.Index('following'), author)
             ),
             q.Lambda( 'followMsg', q.Get(q.Var('followMsg')) )
         )
     )
-        .then(res => {
-            // TODO
-            // should get the avatar & profile info for each item in the array
-            // return res.data.map(doc => doc.data)
-            // TODO -- need to check the msg value for `following: false`
-            var map = res.data.reduce((acc, doc) => {
-                // TODO -- should be the person's profile data
-                // need to do another query to get the profile data
-                acc[doc.data.value.content.contact] = doc.data
-                return acc
-            }, {})
+        .then(res => res.data)
+}
 
-            return map
+function getAvatars (followed) {
+    console.log('in get avas', followed)
+
+    return client.query(
+        q.Map(
+            // followed,
+            followed,
+            q.Lambda(
+                'id',
+                q.Map(
+                    q.Paginate(
+                        q.Match(q.Index('avatar-by-id'), q.Var('id')),
+                    ),
+                    q.Lambda('msg', q.Get(q.Var('msg')))
+                )
+            )
+        )
+    )
+        .then(res => {
+            var _res = res.map(doc => doc.data)
+            console.log('ava res', _res)
+            return _res
+        })
+        .catch(err => {
+            console.log('***ava errrrrrr', err)
         })
 }
+
+function getNames (followed) {
+    console.log('in get names', followed)
+
+    return client.query(
+        q.Map(
+            followed,
+            q.Lambda(
+                'id',
+                // q.Match(q.Index('about-by-author'), q.Var('id'))
+                q.Map(
+                    q.Paginate(
+                        q.Match(q.Index('about-by-author'), q.Var('id')),
+                    ),
+                    q.Lambda('msg', q.Get(q.Var('msg')))
+                )
+            )
+        )
+    )
+        .then(res => {
+            var _res = res.map(doc => doc.data)
+            console.log('**name res', _res)
+            return _res
+        })
+        .catch(err => {
+            console.log('***name errrrrrr', err)
+        })
+        // q.Lambda('msg', q.Get(q.Var('msg')))
+}
+
+
+// function get (author) {
+//     return client.query(
+//         q.Map(
+//             q.Paginate(
+//                 q.Reverse( q.Match(q.Index('following'), author) )
+//             ),
+//             q.Lambda( 'followMsg', q.Get(q.Var('followMsg')) )
+//         )
+//     )
+//         .then(res => {
+//             // TODO
+//             // should get the avatar & profile info for each item in the array
+
+//             // return res.data.map(doc => doc.data)
+//             // TODO -- need to check the msg value for `following: false`
+//             var map = res.data.reduce((acc, doc) => {
+//                 // TODO -- should be the person's profile data
+//                 // need to do another query to get the profile data
+//                 acc[doc.data.value.content.contact] = doc.data
+//                 return acc
+//             }, {})
+
+//             return map
+//         })
+// }
 
 async function post (author, keys, msg) {
     // try {
