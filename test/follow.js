@@ -1,6 +1,8 @@
 require('dotenv').config()
 var test = require('tape')
+var fs = require('fs')
 var follow = require('../follow')
+var avatar = require('../avatar')
 var ssc = require('@nichoth/ssc')
 
 var keys = ssc.createKeys()
@@ -10,10 +12,6 @@ var userThree = ssc.createKeys()
 test('get the list of follows', function (t) {
     follow.get(keys.id)
         .then(res => {
-            // console.log('********in here', res)
-            // console.log('got res in test')
-            // console.log(res)
-
             t.equal(Object.keys(res).length, 0, 'should return an empty list')
             t.end()
         })
@@ -77,28 +75,35 @@ test('follow another user', function (t) {
 })
 
 test('get the list of follows', function (t) {
-    follow.get(keys.id)
-        .then(res => {
-            // console.log('******res', res)
-
-            // should return a map of { userID => profile data }
-            // where `userID` is a person you are following
-
-            // console.log('****res**** hrrrr', res)
-
-            t.ok(res[userTwo.id], 'should return a map')
-            t.equal(res[userTwo.id].id, userTwo.id,
-                'should have user two in the follow data')
-            t.equal(res[userThree.id].id, userThree.id,
-                'should have user three in the follow data')
-
-            t.end()
+    var file = 'data:image/png;base64,' +
+        fs.readFileSync(__dirname + '/caracal.jpg', {
+            encoding: 'base64'
         })
-        .catch(err => {
-            console.log('boooooooooo2', err)
-            t.error(err)
-            t.end()
+    avatar.post(userTwo, file)
+        .then(() => {
+            follow.get(keys.id)
+                .then(res => {
+                    // should return a map of { userID => profile data }
+                    // where `userID` is a person you are following
+
+                    t.ok(res[userTwo.id].avatarUrl,
+                        'should return a url for the avatar')
+
+                    t.ok(res[userTwo.id], 'should return a map')
+                    t.equal(res[userTwo.id].id, userTwo.id,
+                        'should have user two in the follow data')
+                    t.equal(res[userThree.id].id, userThree.id,
+                        'should have user three in the follow data')
+
+                    t.end()
+                })
+                .catch(err => {
+                    console.log('boooooooooo2', err)
+                    t.error(err)
+                    t.end()
+                })
         })
+
 })
 
 // TODO

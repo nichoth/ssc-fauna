@@ -1,9 +1,16 @@
 var faunadb = require('faunadb')
 var ssc = require('@nichoth/ssc')
+let cloudinary = require("cloudinary").v2;
 
 var q = faunadb.query
 var client = new faunadb.Client({
     secret: process.env.FAUNADB_SERVER_SECRET
+})
+
+cloudinary.config({ 
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 })
 
 // see who you are following
@@ -19,7 +26,6 @@ var client = new faunadb.Client({
 function get (author) {
     return getFollowed(author)
         .then(followed => {
-            // console.log('******ooooo here', followed.map(res => res.data))
             var _followed = followed.map(res => {
                 return res.data.value.content.contact
             })
@@ -30,24 +36,26 @@ function get (author) {
             ])
         })
         .then(([followed, avas, names]) => {
-            // console.log('****aaaaa fol, ava, names', followed, avas, names)
             var fols = followed.reduce((acc, id, i) => {
-                // console.log('**doc**', doc)
+
+                var slugslug = null
+                var ava = (avas && avas[i] && avas[i][0]) ?
+                    avas[i][0].data :
+                    null
+                if (ava && ava.avatarLink) {
+                    var slugifiedHash = encodeURIComponent('' + ava.avatarLink)
+                    slugslug = encodeURIComponent(slugifiedHash)
+                }
+
                 acc[id] = {
                     id: id,
-                    avatar: (avas && avas[i] && avas[i][0]) ?
-                        avas[i][0].data :
-                        null,
+                    avatarUrl: cloudinary.url(slugslug),
+                    avatar: ava,
                     name: (names && names[i]) || null
                 }
                 return acc
             }, {})
 
-            // console.log('**fols**', fols)
-            // return [followed, avas, names]
-            // var fold = followed.reduce((acc, fol) => {
-            //     return acc
-            // }, {})
             return fols
         })
 }
@@ -65,7 +73,6 @@ function getFollowed (author) {
 }
 
 function getAvatars (followed) {
-    // console.log('in get avas', followed)
 
     return client.query(
         q.Map(
@@ -97,7 +104,6 @@ function getNames (followed) {
             followed,
             q.Lambda(
                 'id',
-                // q.Match(q.Index('about-by-author'), q.Var('id'))
                 q.Map(
                     q.Paginate(
                         q.Match(q.Index('about-by-author'), q.Var('id')),
@@ -109,7 +115,6 @@ function getNames (followed) {
     )
         .then(res => {
             var _res = res.map(doc => doc.data)
-            // console.log('**name res', _res)
             return _res
         })
         .catch(err => {
