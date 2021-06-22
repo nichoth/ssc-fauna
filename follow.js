@@ -39,7 +39,7 @@ function get (author) {
                     name: (names && names[i]) || null
                 }
                 return acc
-            }, [])
+            }, {})
 
             // console.log('**fols**', fols)
             // return [followed, avas, names]
