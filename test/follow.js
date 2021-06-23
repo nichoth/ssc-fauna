@@ -117,12 +117,12 @@ test('set the user name', function (t) {
         .then((res) => {
             follow.get(keys.id)
                 .then(res => {
-                    // console.log('set name response', res)
-                    // console.log('----------------------------------')
+                    console.log('set name response', res)
+                    console.log('----------------------------------')
                     // console.log(res[userTwo.id].name.value)
                     // .data.value.content.name
-                    t.equal(res[userTwo.id].name.value.content.name,
-                        'fooo', 'should have the user name in the response')
+                    t.equal(res[userTwo.id].name, 'fooo',
+                        'should have the user name in the response')
                     t.end()
                 })
         })
