@@ -3,6 +3,7 @@ var test = require('tape')
 var fs = require('fs')
 var follow = require('../follow')
 var avatar = require('../avatar')
+var abouts = require('../abouts')
 var ssc = require('@nichoth/ssc')
 
 var keys = ssc.createKeys()
@@ -103,7 +104,33 @@ test('get the list of follows', function (t) {
                     t.end()
                 })
         })
+})
 
+test('set the user name', function (t) {
+    var msg = ssc.createMsg(userTwo, null, {
+        type: 'about',
+        about: userTwo.id,
+        name: 'fooo'
+    })
+
+    abouts.post(userTwo, msg)
+        .then((res) => {
+            follow.get(keys.id)
+                .then(res => {
+                    // console.log('set name response', res)
+                    // console.log('----------------------------------')
+                    // console.log(res[userTwo.id].name.value)
+                    // .data.value.content.name
+                    t.equal(res[userTwo.id].name.value.content.name,
+                        'fooo', 'should set the user name')
+                    t.end()
+                })
+        })
+        .catch(err => {
+            console.log('***** err', err)
+            t.error(err)
+            t.end()
+        })
 })
 
 // TODO

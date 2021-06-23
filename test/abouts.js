@@ -6,7 +6,6 @@ var ssc = require('@nichoth/ssc')
 var keys = ssc.createKeys()
 
 test('create the user name', function (t) {
-
     var msgContent = {
         type: 'about',
         about: keys.id,

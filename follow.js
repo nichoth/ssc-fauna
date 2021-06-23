@@ -51,7 +51,9 @@ function get (author) {
                     id: id,
                     avatarUrl: cloudinary.url(slugslug),
                     avatar: ava,
-                    name: (names && names[i]) || null
+                    name: (names && names[i]) ?
+                        (names[i] && names[i][0] && names[i][0].data) :
+                        null
                 }
                 return acc
             }, {})

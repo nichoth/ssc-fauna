@@ -52,6 +52,9 @@ async function post (keys, msg) {
         }
     }
 
+    // console.log('last about', lastAboutMsg)
+    // console.log('keys, msg', keys, msg)
+
     try {
         var isValid = ssc.verifyObj(keys, lastAboutMsg || null, msg)
     } catch (err) {
@@ -60,6 +63,7 @@ async function post (keys, msg) {
     }
 
     if (!isValid) {
+        console.log('not valid', isValid)
         throw new Error('invalid message')
     }
 
