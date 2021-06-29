@@ -8,12 +8,8 @@ var client = new faunadb.Client({
 
 // TODO -- get the foaf posts
 
-
-
-function get (id) {
-    // TODO -- should be done in a single query, not multiple
+function getFollowing (id) {
     return client.query(
-
         // get everyone i'm following
         q.Map(
             q.Paginate(
@@ -22,6 +18,22 @@ function get (id) {
             q.Lambda( 'followMsg', q.Get(q.Var('followMsg')) )
         )
     )
+}
+
+
+function get (id) {
+    // TODO -- should be done in a single query, not multiple
+    // return client.query(
+
+    //     // get everyone i'm following
+    //     q.Map(
+    //         q.Paginate(
+    //             q.Reverse( q.Match(q.Index('following'), id) )
+    //         ),
+    //         q.Lambda( 'followMsg', q.Get(q.Var('followMsg')) )
+    //     )
+    // )
+    return getFollowing(id)
         .then(res => res.data.map(d => d.data))
         .then(arr => {
             // console.log('aaarrrrr', arr)

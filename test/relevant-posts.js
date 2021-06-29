@@ -53,7 +53,7 @@ test('get relevant posts', function (t) {
         .then((res) => {
             // we are now following a feed with 1 post
             t.ok(res, 'got a response')
-            console.log('**relevants res', JSON.stringify(res, null, 2))
+            // console.log('**relevants res', JSON.stringify(res, null, 2))
 
             // here we get relevant posts
             relevantPosts.get(userOne.id)
@@ -94,6 +94,7 @@ test('relevant +1', function (t) {
     // in the result
     t.end()
 })
+
 
 test('foafs', function (t) {
     var msgContent = {
