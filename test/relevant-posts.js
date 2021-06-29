@@ -96,58 +96,58 @@ test('relevant +1', function (t) {
 })
 
 
-test('foafs', function (t) {
-    var msgContent = {
-        type: 'follow',
-        contact: userThree.id,
-        author: userTwo.id
-    }
+// test('foafs', function (t) {
+//     var msgContent = {
+//         type: 'follow',
+//         contact: userThree.id,
+//         author: userTwo.id
+//     }
 
-    // create a `follow` msg -- userTwo follows userThree
-    var followMsg = ssc.createMsg(userTwo, null, msgContent)
-    var followProm = follow.post(userTwo.id, userTwo, followMsg)
+//     // create a `follow` msg -- userTwo follows userThree
+//     var followMsg = ssc.createMsg(userTwo, null, msgContent)
+//     var followProm = follow.post(userTwo.id, userTwo, followMsg)
 
-    // make a post by userThree
-    // get the file
-    var file = 'data:image/jpg;base64,' +
-        fs.readFileSync(__dirname + '/caracal.jpg', {
-            encoding: 'base64'
-        })
+//     // make a post by userThree
+//     // get the file
+//     var file = 'data:image/jpg;base64,' +
+//         fs.readFileSync(__dirname + '/caracal.jpg', {
+//             encoding: 'base64'
+//         })
 
-    // get the file hash for the `mentions` array
-    var hash = createHash('sha256')
-    hash.update(file)
-    var _hash = hash.digest('base64')
+//     // get the file hash for the `mentions` array
+//     var hash = createHash('sha256')
+//     hash.update(file)
+//     var _hash = hash.digest('base64')
 
-    // create a `post` msg
-    var msg = ssc.createMsg(userThree, null, {
-        type: 'test',
-        text: 'testing foafs',
-        mentions: [_hash]
-    })
+//     // create a `post` msg
+//     var msg = ssc.createMsg(userThree, null, {
+//         type: 'test',
+//         text: 'testing foafs',
+//         mentions: [_hash]
+//     })
 
-    var feedProm = postOneMsg(userThree, msg, file)
+//     var feedProm = postOneMsg(userThree, msg, file)
 
-    Promise.all([
-        followProm,
-        feedProm
-    ])
-        .then(() => {
-            // in here, get relevants, b/c now userThree has a feed
-            relevantPosts.get(userOne.id)
-                .then(posts => {
+//     Promise.all([
+//         followProm,
+//         feedProm
+//     ])
+//         .then(() => {
+//             // in here, get relevants, b/c now userThree has a feed
+//             relevantPosts.get(userOne.id)
+//                 .then(posts => {
 
-                    console.log('res', posts)
+//                     console.log('res', posts)
 
-                    var post = posts.find(post => {
-                        return post.value.author === userThree.id
-                    })
+//                     var post = posts.find(post => {
+//                         return post.value.author === userThree.id
+//                     })
 
-                    console.log('the found post', post)
-                    t.ok(post, 'should have the post by userThree')
-                    t.end()
-                })
-                .catch(err => t.error(err))
-        })
-        .catch(err => t.error(err))
-})
+//                     console.log('the found post', post)
+//                     t.ok(post, 'should have the post by userThree')
+//                     t.end()
+//                 })
+//                 .catch(err => t.error(err))
+//         })
+//         .catch(err => t.error(err))
+// })

@@ -20,22 +20,40 @@ function getFollowing (id) {
     )
 }
 
+function getFriendsAndFoafs (id) {
+    return client.query(
+        q.Map(
+            q.Paginate(
+                q.Reverse( q.Match(q.Index('following'), id) )
+            ),
+            q.Lambda( 'followMsg', q.Get(q.Var('followMsg')) )
+        )
+    )
+}
 
 function get (id) {
     // TODO -- should be done in a single query, not multiple
     // return client.query(
 
-    //     // get everyone i'm following
-    //     q.Map(
-    //         q.Paginate(
-    //             q.Reverse( q.Match(q.Index('following'), id) )
-    //         ),
-    //         q.Lambda( 'followMsg', q.Get(q.Var('followMsg')) )
-    //     )
-    // )
     return getFollowing(id)
         .then(res => res.data.map(d => d.data))
+
+        // in here need to get everyone that the people in prev res are
+        // following
+        // .then(arr => {
+        //     return client.query(
+        //         q.Map(
+        //             q.Paginate(
+        //                 q.Union(
+        //                     arr.map()
+        //                 )
+        //             )
+        //         )
+        //     )
+        // })
+
         .then(arr => {
+
             // console.log('aaarrrrr', arr)
             // console.log('aaarrrrr content', arr[0].value.content)
             return client.query(
