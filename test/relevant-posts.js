@@ -9,6 +9,7 @@ var { postOneMsg } = require('../feed')
 
 var userOne = ssc.createKeys()
 var userTwo = ssc.createKeys()
+var userThree = ssc.createKeys()
 
 test('get relevant posts', function (t) {
     var msgContent = {
@@ -21,21 +22,18 @@ test('get relevant posts', function (t) {
     var msg = ssc.createMsg(userOne, null, msgContent)
     var followProm = follow.post(userOne.id, userOne, msg)
 
-    // get the hash of the file
+    // get the file
     var file = 'data:image/jpg;base64,' +
         fs.readFileSync(__dirname + '/caracal.jpg', {
             encoding: 'base64'
         })
 
-    // for the `mentions` array
+    // get the file hash for the `mentions` array
     var hash = createHash('sha256')
     hash.update(file)
     var _hash = hash.digest('base64')
-    // var slugifiedHash = encodeURIComponent('' + _hash)
 
 
-    // server-side, put the file-hash into the msg, then we get the key
-    // for the msg
 
 
     // create a `post` msg
@@ -55,6 +53,7 @@ test('get relevant posts', function (t) {
         .then((res) => {
             // we are now following a feed with 1 post
             t.ok(res, 'got a response')
+            console.log('**relevants res', JSON.stringify(res, null, 2))
 
             // here we get relevant posts
             relevantPosts.get(userOne.id)
@@ -94,4 +93,60 @@ test('relevant +1', function (t) {
     // post something to your own feed and verify that it's returned
     // in the result
     t.end()
+})
+
+test('foafs', function (t) {
+    var msgContent = {
+        type: 'follow',
+        contact: userThree.id,
+        author: userTwo.id
+    }
+
+    // create a `follow` msg -- userTwo follows userThree
+    var followMsg = ssc.createMsg(userTwo, null, msgContent)
+    var followProm = follow.post(userTwo.id, userTwo, followMsg)
+
+    // make a post by userThree
+    // get the file
+    var file = 'data:image/jpg;base64,' +
+        fs.readFileSync(__dirname + '/caracal.jpg', {
+            encoding: 'base64'
+        })
+
+    // get the file hash for the `mentions` array
+    var hash = createHash('sha256')
+    hash.update(file)
+    var _hash = hash.digest('base64')
+
+    // create a `post` msg
+    var msg = ssc.createMsg(userThree, null, {
+        type: 'test',
+        text: 'testing foafs',
+        mentions: [_hash]
+    })
+
+    var feedProm = postOneMsg(userThree, msg, file)
+
+    Promise.all([
+        followProm,
+        feedProm
+    ])
+        .then(() => {
+            // in here, get relevants, b/c now userThree has a feed
+            relevantPosts.get(userOne.id)
+                .then(posts => {
+
+                    console.log('res', posts)
+
+                    var post = posts.find(post => {
+                        return post.value.author === userThree.id
+                    })
+
+                    console.log('the found post', post)
+                    t.ok(post, 'should have the post by userThree')
+                    t.end()
+                })
+                .catch(err => t.error(err))
+        })
+        .catch(err => t.error(err))
 })
