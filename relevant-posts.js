@@ -26,11 +26,30 @@ function getWithFoafs (id) {
         // first we get everyone that `id` is following
         .then(res => res.data.map(d => d.data))
         .then(arr => {
+            var postProm = client.query(
+                q.Map(
+                    q.Paginate(
+                        q.Union(
+                            // get the posts for the foaf array
+                            // include your own id
+                            [q.Reverse(q.Match(q.Index('author'), id))].concat(
+                                arr.map(post => {
+                                    return q.Reverse(q.Match(q.Index('author'),
+                                        post.value.content.contact))
+                                })
+                            )
+                        )
+                    ),
+                    q.Lambda('post', q.Get(q.Var('post')))
+                )
+
+            )
+
             // here we have an array of people you're following
             // the follwed id is
             // [{ value: { content: { contact } }}]
             // need to get everyone they're following
-            return client.query(
+            var foafProm = client.query(
                 q.Map(
                     q.Paginate(
                         q.Union(
@@ -43,15 +62,21 @@ function getWithFoafs (id) {
                     q.Lambda('followMsg', q.Get(q.Var('followMsg')))
                 )
             )
+
+            return Promise.all([postProm, foafProm])
         })
-        .then(res => res.data.map(d => d.data))
-        .then(foafArr => {
+        .then(([postRes, foafRes]) => [
+            postRes.data.map(d => d.data),
+            foafRes.data.map(d => d.data)
+        ])
+        .then(([postArr, foafArr]) => {
             // get posts in here
             return client.query(
                 // get the posts by the `contact`s in the previous results
                 q.Map(
                     q.Paginate(
                         q.Union(
+                            // get the posts for the foaf array
                             // include your own id
                             [q.Reverse(q.Match(q.Index('author'), id))].concat(
                                 foafArr.map(post => {
@@ -65,7 +90,7 @@ function getWithFoafs (id) {
                 )
             )
                 // concat the msgs from 1 hop out
-                .then(res => foafArr.concat(res.data.map(d => {
+                .then(res => postArr.concat(res.data.map(d => {
                     return xtend(d.data, {
                         value: xtend(d.data.value, {
                             previous: d.data.value.previous || null

@@ -135,6 +135,8 @@ test('foafs', function (t) {
 
             relevantPosts.getWithFoafs(userOne.id)
                 .then(posts => {
+                    // console.log('posts', JSON.stringify(posts, null, 2))
+
                     var post = posts.find(post => {
                         return post.value.author === userThree.id
                     })
@@ -145,7 +147,9 @@ test('foafs', function (t) {
                         return post.value.author === userTwo.id
                     })
 
-                    t.ok(userTwoPost, 'should have the post by userTwo')
+                    t.ok(userTwoPost, 'should have a message by userTwo')
+                    t.equal(userTwoPost.value.content.text, 'woooo',
+                        'should have the post from userTwo')
                     t.end()
                 })
                 .catch(err => {
