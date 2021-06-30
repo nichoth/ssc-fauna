@@ -26,10 +26,10 @@ function getFoafsTest (id) {
         // first we get everyone that `id` is following
         .then(res => res.data.map(d => d.data))
         .then(arr => {
-            // console.log('rrrrrrraaaaa', JSON.stringify(arr, null, 2))
             // here we have an array of people you're following
             // the follwed id is
             // [{ value: { content: { contact } }}]
+            // need to get everyone they're following
             return client.query(
                 q.Map(
                     q.Paginate(
@@ -47,7 +47,6 @@ function getFoafsTest (id) {
         .then(res => res.data.map(d => d.data))
         .then(arr => {
             // get posts in here
-            // console.log('aaarrrr', arr)
             return client.query(
                 // get the posts by the `contact`s in the previous results
                 q.Map(
@@ -65,6 +64,7 @@ function getFoafsTest (id) {
                     q.Lambda('post', q.Get(q.Var('post')))
                 )
             )
+                // concat the msgs from 1 hop out
                 .then(res => arr.concat(res.data.map(d => {
                     return xtend(d.data, {
                         value: xtend(d.data.value, {
