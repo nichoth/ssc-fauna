@@ -65,7 +65,7 @@ function getWithFoafs (id) {
                 )
             )
                 // concat the msgs from 1 hop out
-                .then(res => arr.concat(res.data.map(d => {
+                .then(res => foafArr.concat(res.data.map(d => {
                     return xtend(d.data, {
                         value: xtend(d.data.value, {
                             previous: d.data.value.previous || null
