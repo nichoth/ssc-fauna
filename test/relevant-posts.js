@@ -34,8 +34,6 @@ test('get relevant posts', function (t) {
     var _hash = hash.digest('base64')
 
 
-
-
     // create a `post` msg
     var msg2 = ssc.createMsg(userTwo, null, {
         type: 'test',
@@ -89,7 +87,7 @@ test('get relevant posts', function (t) {
 })
 
 test('relevant +1', function (t) {
-    // TODO
+    console.log('TODO')
     // post something to your own feed and verify that it's returned
     // in the result
     t.end()
@@ -126,50 +124,39 @@ test('foafs', function (t) {
         mentions: [_hash]
     })
 
-    var feedProm = postOneMsg(userThree, msg, file)
+    var postProm = postOneMsg(userThree, msg, file)
 
     Promise.all([
         followProm,
-        feedProm
+        postProm
     ])
         .then(() => {
             // in here, get relevants, b/c now userThree has a feed
 
             relevantPosts.getFoafsTest(userOne.id)
                 .then(posts => {
-                    // console.log('**res**', posts)
-
-                    // console.log('user one', userOne)
-                    // console.log('user two', userTwo)
-                    // console.log('user three', userThree)
-
                     var post = posts.find(post => {
                         return post.value.author === userThree.id
                     })
 
-                    console.log('the found post -- ', post)
+                    // console.log('the found post -- ', post)
+
+                    var userTwoPost = posts.find(post => {
+                        return post.value.author === userTwo.id
+                    })
+
+                    t.ok(userTwoPost, 'should have the post by userTwo')
                     t.ok(post, 'should have the post by userThree')
                     t.end()
                 })
                 .catch(err => {
                     console.log('errrrr', err)
                     t.error(err)
+                    t.end()
                 })
-
-            // relevantPosts.get(userOne.id)
-            //     .then(posts => {
-
-            //         console.log('res', posts)
-
-            //         var post = posts.find(post => {
-            //             return post.value.author === userThree.id
-            //         })
-
-            //         console.log('the found post', post)
-            //         t.ok(post, 'should have the post by userThree')
-            //         t.end()
-            //     })
-            //     .catch(err => t.error(err))
         })
-        .catch(err => t.error(err))
+        .catch(err => {
+            t.error(err)
+            t.end()
+        })
 })

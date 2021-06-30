@@ -20,26 +20,6 @@ function getFollowing (id) {
     )
 }
 
-// function getFriendsAndFoafs (id) {
-//     // need to get the following list, then use that to get the foaf list
-//     return client.query(
-//         q.Map(
-//             q.Paginate(
-//                 q.Union(
-//                     q.Map(
-//                         q.Paginate(
-//                             q.Reverse( q.Match(q.Index('following'), id) )
-//                         ),
-//                         q.Lambda( 'followMsg', q.Get(q.Var('followMsg')) )
-//                     )
-
-//                 )
-//             ),
-//             q.Lambda('fol', q.Get(q.Var('fol')))
-//         )
-//     )
-// }
-
 function getFoafsTest (id) {
     // return getFriendsAndFoafs(id)
     return getFollowing(id)
@@ -85,13 +65,13 @@ function getFoafsTest (id) {
                     q.Lambda('post', q.Get(q.Var('post')))
                 )
             )
-                .then(res => res.data.map(d => {
+                .then(res => arr.concat(res.data.map(d => {
                     return xtend(d.data, {
                         value: xtend(d.data.value, {
                             previous: d.data.value.previous || null
                         })
                     })
-                }))
+                })))
         })
 }
 
