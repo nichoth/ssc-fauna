@@ -10,7 +10,7 @@ var client = new faunadb.Client({
 
 function getFollowing (id) {
     return client.query(
-        // get everyone i'm following
+        // get everyone `id` is following
         q.Map(
             q.Paginate(
                 q.Reverse( q.Match(q.Index('following'), id) )
@@ -21,6 +21,7 @@ function getFollowing (id) {
 }
 
 function getFriendsAndFoafs (id) {
+    // need to get the following list, then use that to get the foaf list
     return client.query(
         q.Map(
             q.Paginate(
@@ -33,13 +34,13 @@ function getFriendsAndFoafs (id) {
 
 function get (id) {
     // TODO -- should be done in a single query, not multiple
-    // return client.query(
 
     return getFollowing(id)
         .then(res => res.data.map(d => d.data))
 
-        // in here need to get everyone that the people in prev res are
-        // following
+        // // in here need to get everyone that the people in prev res are
+        // // following
+        // // (the foafs)
         // .then(arr => {
         //     return client.query(
         //         q.Map(
@@ -53,9 +54,7 @@ function get (id) {
         // })
 
         .then(arr => {
-
             // console.log('aaarrrrr', arr)
-            // console.log('aaarrrrr content', arr[0].value.content)
             return client.query(
                 // get the posts by the `contact`s in the previous results
                 q.Map(
