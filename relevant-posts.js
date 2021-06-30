@@ -42,7 +42,6 @@ function getWithFoafs (id) {
                     ),
                     q.Lambda('post', q.Get(q.Var('post')))
                 )
-
             )
 
             // here we have an array of people you're following
@@ -79,9 +78,9 @@ function getWithFoafs (id) {
                             // get the posts for the foaf array
                             // include your own id
                             [q.Reverse(q.Match(q.Index('author'), id))].concat(
-                                foafArr.map(post => {
+                                foafArr.map(followMsg => {
                                     return q.Reverse(q.Match(q.Index('author'),
-                                        post.value.content.contact))
+                                        followMsg.value.content.contact))
                                 })
                             )
                         )
@@ -89,7 +88,7 @@ function getWithFoafs (id) {
                     q.Lambda('post', q.Get(q.Var('post')))
                 )
             )
-                // concat the msgs from 1 hop out
+                // concat the posts from 1 hop out with the foaf posts
                 .then(res => postArr.concat(res.data.map(d => {
                     return xtend(d.data, {
                         value: xtend(d.data.value, {
