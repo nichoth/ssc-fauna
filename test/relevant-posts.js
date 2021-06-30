@@ -133,20 +133,19 @@ test('foafs', function (t) {
         .then(() => {
             // in here, get relevants, b/c now userThree has a feed
 
-            relevantPosts.getFoafsTest(userOne.id)
+            relevantPosts.getWithFoafs(userOne.id)
                 .then(posts => {
                     var post = posts.find(post => {
                         return post.value.author === userThree.id
                     })
 
-                    // console.log('the found post -- ', post)
+                    t.ok(post, 'should have the post by userThree')
 
                     var userTwoPost = posts.find(post => {
                         return post.value.author === userTwo.id
                     })
 
                     t.ok(userTwoPost, 'should have the post by userTwo')
-                    t.ok(post, 'should have the post by userThree')
                     t.end()
                 })
                 .catch(err => {

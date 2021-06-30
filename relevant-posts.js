@@ -20,7 +20,7 @@ function getFollowing (id) {
     )
 }
 
-function getFoafsTest (id) {
+function getWithFoafs (id) {
     // return getFriendsAndFoafs(id)
     return getFollowing(id)
         // first we get everyone that `id` is following
@@ -110,8 +110,7 @@ function get (id) {
 }
 
 module.exports = {
-    // getFriendsAndFoafs,
     get,
-    getFoafsTest
+    getWithFoafs
 }
 
