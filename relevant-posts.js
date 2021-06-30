@@ -45,7 +45,7 @@ function getFoafsTest (id) {
             )
         })
         .then(res => res.data.map(d => d.data))
-        .then(arr => {
+        .then(foafArr => {
             // get posts in here
             return client.query(
                 // get the posts by the `contact`s in the previous results
@@ -54,7 +54,7 @@ function getFoafsTest (id) {
                         q.Union(
                             // include your own id
                             [q.Reverse(q.Match(q.Index('author'), id))].concat(
-                                arr.map(post => {
+                                foafArr.map(post => {
                                     return q.Reverse(q.Match(q.Index('author'),
                                         post.value.content.contact))
                                 })
