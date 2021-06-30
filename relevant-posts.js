@@ -20,16 +20,79 @@ function getFollowing (id) {
     )
 }
 
-function getFriendsAndFoafs (id) {
-    // need to get the following list, then use that to get the foaf list
-    return client.query(
-        q.Map(
-            q.Paginate(
-                q.Reverse( q.Match(q.Index('following'), id) )
-            ),
-            q.Lambda( 'followMsg', q.Get(q.Var('followMsg')) )
-        )
-    )
+// function getFriendsAndFoafs (id) {
+//     // need to get the following list, then use that to get the foaf list
+//     return client.query(
+//         q.Map(
+//             q.Paginate(
+//                 q.Union(
+//                     q.Map(
+//                         q.Paginate(
+//                             q.Reverse( q.Match(q.Index('following'), id) )
+//                         ),
+//                         q.Lambda( 'followMsg', q.Get(q.Var('followMsg')) )
+//                     )
+
+//                 )
+//             ),
+//             q.Lambda('fol', q.Get(q.Var('fol')))
+//         )
+//     )
+// }
+
+function getFoafsTest (id) {
+    // return getFriendsAndFoafs(id)
+    return getFollowing(id)
+        // first we get everyone that `id` is following
+        .then(res => res.data.map(d => d.data))
+        .then(arr => {
+            // console.log('rrrrrrraaaaa', JSON.stringify(arr, null, 2))
+            // here we have an array of people you're following
+            // the follwed id is
+            // [{ value: { content: { contact } }}]
+            return client.query(
+                q.Map(
+                    q.Paginate(
+                        q.Union(
+                            arr.map(folMsg => {
+                                return q.Reverse( q.Match(q.Index('following'),
+                                    folMsg.value.content.contact) )
+                            })
+                        )
+                    ),
+                    q.Lambda('followMsg', q.Get(q.Var('followMsg')))
+                )
+            )
+        })
+        .then(res => res.data.map(d => d.data))
+        .then(arr => {
+            // get posts in here
+            // console.log('aaarrrr', arr)
+            return client.query(
+                // get the posts by the `contact`s in the previous results
+                q.Map(
+                    q.Paginate(
+                        q.Union(
+                            // include your own id
+                            [q.Reverse(q.Match(q.Index('author'), id))].concat(
+                                arr.map(post => {
+                                    return q.Reverse(q.Match(q.Index('author'),
+                                        post.value.content.contact))
+                                })
+                            )
+                        )
+                    ),
+                    q.Lambda('post', q.Get(q.Var('post')))
+                )
+            )
+                .then(res => res.data.map(d => {
+                    return xtend(d.data, {
+                        value: xtend(d.data.value, {
+                            previous: d.data.value.previous || null
+                        })
+                    })
+                }))
+        })
 }
 
 function get (id) {
@@ -37,22 +100,6 @@ function get (id) {
 
     return getFollowing(id)
         .then(res => res.data.map(d => d.data))
-
-        // // in here need to get everyone that the people in prev res are
-        // // following
-        // // (the foafs)
-        // .then(arr => {
-        //     return client.query(
-        //         q.Map(
-        //             q.Paginate(
-        //                 q.Union(
-        //                     arr.map()
-        //                 )
-        //             )
-        //         )
-        //     )
-        // })
-
         .then(arr => {
             // console.log('aaarrrrr', arr)
             return client.query(
@@ -82,5 +129,9 @@ function get (id) {
         })
 }
 
-module.exports = { get }
+module.exports = {
+    // getFriendsAndFoafs,
+    get,
+    getFoafsTest
+}
 
