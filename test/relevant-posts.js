@@ -11,6 +11,19 @@ var userOne = ssc.createKeys()
 var userTwo = ssc.createKeys()
 var userThree = ssc.createKeys()
 
+test('get relevant posts when there are none', function (t) {
+    relevantPosts.get(userOne.id)
+        .then(res => {
+            t.equal(res.length, 0, 'should return an empty array')
+            t.end()
+        })
+        .catch(err => {
+            console.log('errrrrrr', err)
+            t.error(err)
+            t.end()
+        })
+})
+
 test('get relevant posts', function (t) {
     var msgContent = {
         type: 'follow',
@@ -93,6 +106,18 @@ test('relevant +1', function (t) {
     t.end()
 })
 
+test('call foafs when there are no foafs', function (t) {
+    relevantPosts.getWithFoafs(userOne.id)
+        .then(res => {
+            t.equal(res.length, 1, 'should have just one result')
+            t.end()
+        })
+        .catch(err => {
+            console.log('errrrrrr', err)
+            t.error(err)
+            t.end()
+        })
+})
 
 test('foafs', function (t) {
     var msgContent = {
