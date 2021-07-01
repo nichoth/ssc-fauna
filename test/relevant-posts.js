@@ -165,7 +165,6 @@ test('foafs', function (t) {
                     var post = posts.find(post => {
                         return post.value.author === userThree.id
                     })
-
                     t.ok(post, 'should have the post by userThree')
 
                     var userTwoPost = posts.find(post => {
