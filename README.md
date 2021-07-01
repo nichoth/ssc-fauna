@@ -306,7 +306,6 @@ test('get relevant posts', function (t) {
     hash.update(file)
     var _hash = hash.digest('base64')
 
-
     // create a `post` msg
     var msg2 = ssc.createMsg(userTwo, null, {
         type: 'test',
@@ -324,15 +323,10 @@ test('get relevant posts', function (t) {
         .then((res) => {
             // we are now following a feed with 1 post
             t.ok(res, 'got a response')
-            // console.log('**relevants res', JSON.stringify(res, null, 2))
 
             // here we get relevant posts for userOne
             relevantPosts.get(userOne.id)
                 .then(res => {
-                    // console.log('resssss', JSON.stringify(res, null, 2))
-                    // console.log('------------------------')
-                    // console.log('msg', JSON.stringify(msg2, null, 2))
-
                     t.equal(res.length, 1, 'should return 1 thing')
 
                     t.equal(res[0].key, ssc.getId(res[0].value),
