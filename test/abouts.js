@@ -46,6 +46,20 @@ test('get the user name', function (t) {
         })
 })
 
+test('get the user ID from the name', function (t) {
+    abouts.getByName('fooo')
+        .then(res => {
+            t.ok(res.length > 1, 'should return all matches for the name')
+            t.ok(res[0].value.content.about, 'should have the ID of the' +
+                ' named person')
+            t.end()
+        })
+        .catch(err => {
+            t.error(err)
+            t.end()
+        })
+})
+
 // TODO
 // test for an invalid message
 // the API function should return an error

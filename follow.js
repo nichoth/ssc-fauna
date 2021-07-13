@@ -76,7 +76,6 @@ function getFollowed (author) {
 }
 
 function getAvatars (followed) {
-
     return client.query(
         q.Map(
             // followed,

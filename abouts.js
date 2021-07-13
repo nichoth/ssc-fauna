@@ -8,6 +8,21 @@ var client = new faunadb.Client({
 
 // for setting and getting your user name
 
+function getByName (name) {
+    return client.query(
+        q.Map(
+            q.Paginate(
+                q.Match(q.Index('about-by-name'), name)
+            ),
+            q.Lambda( 'aboutMsg', q.Get(q.Var('aboutMsg')) )
+        )
+    )
+        .then(res => res.data)
+        .then(res => res.map(r => {
+            return r.data
+        }))
+}
+
 async function get (author) {
     // console.log('***author***', author)
 
@@ -77,4 +92,4 @@ async function post (keys, msg) {
         .then(res => res.data)
 }
 
-module.exports = { get, post }
+module.exports = { get, post, getByName }
