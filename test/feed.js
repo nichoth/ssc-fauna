@@ -24,10 +24,6 @@ test('get a feed', function (t) {
 })
 
 test('post one message', function (t) {
-
-
-
-
     var file = 'data:image/png;base64,' +
         fs.readFileSync(__dirname + '/caracal.jpg', {
             encoding: 'base64'
@@ -36,18 +32,12 @@ test('post one message', function (t) {
     var hash = createHash('sha256')
     hash.update(file)
     var _hash = hash.digest('base64')
-    // var slugifiedHash = encodeURIComponent('' + _hash)
 
-    // TODO -- need to add the mentions array
     var msg = ssc.createMsg(keys, null, {
         type: 'test',
         text: 'woooo',
         mentions: [_hash]
     })
-
-
-
-
 
     postOneMsg(keys, msg, file)
         .then(res => {

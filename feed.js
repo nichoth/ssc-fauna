@@ -168,8 +168,6 @@ function postOneMsg (keys, msg, file) {
 
 
 
-
-
         // console.log('msg in herererererere', msg)
 
         var msgHash = ssc.getId(msg)
