@@ -23,8 +23,6 @@ function getByName (name) {
 }
 
 async function get (author) {
-    // console.log('***author***', author)
-
     try {
         var lastAboutMsg = await client.query(
             q.Get(
