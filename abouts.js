@@ -17,8 +17,7 @@ function getByName (name) {
             q.Lambda( 'aboutMsg', q.Get(q.Var('aboutMsg')) )
         )
     )
-        .then(res => res.data)
-        .then(res => res.map(r => {
+        .then(res => res.data.map(r => {
             return r.data
         }))
 }
