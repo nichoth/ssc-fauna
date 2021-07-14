@@ -1,3 +1,4 @@
+require('dotenv').config()
 var faunadb = require('faunadb')
 var xtend = require('xtend')
 var ssc = require('@nichoth/ssc')
@@ -15,6 +16,223 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 })
+
+
+function getByName (name) {
+    // first get the id by name,
+    // then can get the feed by that id
+
+    // see fauna shell
+    //  "Invalid lambda. Lambda in this context may not read, write, or call a user function."
+    // 
+    // return client.query(
+    //     q.Paginate(
+    //         q.Reverse(
+    //             q.Join(
+    //                 q.Match( q.Index('about-by-name'), name ),
+    //                 q.Lambda(
+    //                     'aboutRef',
+    //                     q.Match(
+    //                         q.Index('author'),
+
+    //                         // [q.Var('aboutRef'), 'value', 'content', 'about']
+
+    //                         q.Select(
+    //                             ['value', 'content', 'about'],
+    //                             q.Get(q.Var('aboutRef'))
+    //                         )
+    //                     )
+    //                 )
+    //             )
+    //         )
+    //     )
+    // )
+
+
+    
+
+
+    return client.query(
+        q.Map(
+            q.Map(
+                q.Paginate( q.Match(q.Index('about-by-name'), name) ),
+                q.Lambda(
+                    'aboutRef',
+                    q.Match(
+                        q.Index('author'),
+                        q.Select(
+                            ['data', 'value', 'content', 'about'],
+                            q.Get( q.Var('aboutRef') )
+                        )
+                    )
+                )
+            ),
+
+            q.Lambda('postRef', q.Get(q.Var('postRef')))
+        )
+    )
+        .then(res => res.data.map(d => d.data))
+
+
+
+
+
+
+
+    // return client.query(
+    //     q.Map(
+    //         q.Map(
+    //             q.Paginate( q.Match(q.Index('about-by-name'), name) ),
+    //             q.Lambda(
+    //                 'aboutRef',
+    //                 q.Match(
+    //                     q.Index('author'),
+    //                     q.Select(
+    //                         ['data', 'value', 'content', 'about'],
+    //                         q.Get( q.Var('aboutRef') )
+    //                     )
+    //                 )
+    //             )
+    //         ),
+        
+    //         q.Lambda('postRef', q.Get(q.Var('postRef')))
+    //     )
+    // )
+
+
+
+
+
+
+    // return client.query(
+    //     q.Map(
+    //         q.Map(
+    //             q.Paginate( q.Match(q.Index('about-by-name'), name) ),
+    //             q.Lambda(
+    //                 'aboutRef',
+    //                 q.Match(
+    //                     q.Index('author'),
+    //                     q.Select(
+    //                         ['data', 'value', 'content', 'about'],
+    //                         q.Get( q.Var('aboutRef') )
+    //                     )
+    //                 )
+    //             )
+    //         ),
+
+    //         q.Lambda('postRef', q.Get(q.Var('postRef')))
+    //     )
+
+    // )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // return client.query(
+    //     q.Map(
+    //         q.Map(
+    //             q.Paginate( q.Match(q.Index('about-by-name'), name) ),
+    //             q.Lambda(
+    //                 'aboutRef',
+    //                 q.Paginate(
+    //                     q.Match(
+    //                         q.Index('author'),
+    //                         q.Select(
+    //                             ['data', 'value', 'content', 'about'],
+    //                             q.Get( q.Var('aboutRef') )
+    //                         )
+    //                     )
+    //                 )
+    //             )
+    //         ),
+
+    //         q.Lambda('postRef', q.Get(q.Var('postRef')))
+    //     )
+    // )
+        // .then(res => {
+        //     var _res = res.data.map(d => d.data)
+        //     // console.log('**res**', _res)
+        //     // return _res
+        //     return client.query(
+        //         q.Map(_res, q.Lambda(
+        //             'data',
+        //             q.Get(q.Var('data'))
+        //         ))
+        //     )
+        // })
+
+
+    // return client.query(
+    //     q.Paginate(
+    //         q.Join(
+    //             q.Match( q.Index('about-by-name'), name),
+    //             q.Lambda(
+    //                 'aboutRef',
+    //                 q.Match(
+    //                     q.Index('author'),
+    //                     q.Select(
+    //                         ['value', 'content', 'about'],
+    //                         q.Var('aboutRef')
+    //                     )
+    //                 )
+    //             )
+    //         )
+    //     )
+    // )
+
+
+
+    // client.query(
+    //     // get the first about msg
+    //     q.Get( q.Match(q.Index('about-by-name'), name) )
+    // )
+
+
+
+    // return client.query(
+    //     q.Map(
+    //         q.Paginate(
+    //             q.Union(
+
+    //             )
+    //         ),
+    //         q.Lambda( 'post', q.Get(q.Var('post')) )
+    //     )
+    //     .then(function (res) {
+    //         return res.data.map(post => {
+    //             var mentionUrls = post.data.value.content
+    //                 .mentions.map(mention => {
+    //                     // slugify the hash twice
+    //                     // don't know why we need to do it twice
+    //                     var slugifiedHash = encodeURIComponent('' + mention)
+    //                     var slugslug = encodeURIComponent(slugifiedHash)
+    //                     return cloudinary.url(slugslug)      
+    //                 })
+
+    //             var xtendedMsg = xtend(post.data, {
+    //                 mentionUrls: mentionUrls
+    //             })
+
+    //             if (!xtendedMsg.value.previous) {
+    //                 xtendedMsg.value.previous = null
+    //             }
+
+    //             return xtendedMsg
+    //         })
+    //     })
+    // )
+}
+
 
 function get (author) {
     return client.query(
@@ -186,5 +404,6 @@ function postOneMsg (keys, msg, file) {
 
 module.exports = {
     get,
+    getByName,
     postOneMsg
 }

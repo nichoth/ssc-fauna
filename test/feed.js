@@ -6,6 +6,8 @@ var feed = require('../feed')
 var singlePost = require('../single-post')
 var createHash = require('crypto').createHash
 
+var abouts = require('../abouts')
+
 var keys = ssc.createKeys()
 var { get, postOneMsg } = feed
 
@@ -78,6 +80,45 @@ test('get a single post', function (t) {
             t.end()
         }) 
         .catch(err => {
+            t.error(err)
+            t.end()
+        })
+})
+
+
+test('name the feed', function (t) {
+    var msgContent = {
+        type: 'about',
+        about: keys.id,
+        name: 'fooo'
+    }
+    var msg = ssc.createMsg(keys, null, msgContent)
+
+    abouts.post(keys, msg)
+        .then((res) => {
+            t.pass('should create an about document')
+            t.equal(res.value.author, keys.id,
+                'should have the right user ID')
+            t.end()
+        })
+        .catch(err => {
+            console.log('***** err', err)
+            t.error(err)
+            t.end()
+        })
+})
+
+test('get a feed by name', function (t) {
+    feed.getByName('fooo')
+        .then(res => {
+            // console.log('**res**', res)
+            // console.log('res content', res[0].value.content)
+            t.ok(Array.isArray(res), 'should return an array')
+            t.equal(res[0].value.content.type, 'post', 'should return posts')
+            t.end()
+        })
+        .catch(err => {
+            console.log('errrrr', err)
             t.error(err)
             t.end()
         })
