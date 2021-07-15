@@ -11,7 +11,7 @@ var client = new faunadb.Client({
     secret: process.env.FAUNADB_SERVER_SECRET
 })
 
-cloudinary.config({ 
+cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
@@ -61,7 +61,7 @@ function get (author) {
                         // don't know why we need to do it twice
                         var slugifiedHash = encodeURIComponent('' + mention)
                         var slugslug = encodeURIComponent(slugifiedHash)
-                        return cloudinary.url(slugslug)      
+                        return cloudinary.url(slugslug)
                     })
 
                 var xtendedMsg = xtend(post.data, {
@@ -133,7 +133,7 @@ function postOneMsg (keys, msg, file) {
                         // width: 100,
                         // height: 150,
                         // crop: "fill"
-                    })      
+                    })
 
                     return xtend(res[0], {
                         mentionUrls: [imgUrl]
@@ -144,7 +144,7 @@ function postOneMsg (keys, msg, file) {
             if (err.name === 'NotFound') {
                 // write the msg b/c the feed is new
                 return msgAndFile(msg, file, slugifiedHash, _hash)
-                    .then(res => {  
+                    .then(res => {
                         var slugslug = encodeURIComponent(slugifiedHash)
 
                         // we slugify twice
@@ -152,7 +152,7 @@ function postOneMsg (keys, msg, file) {
                             // width: 100,
                             // height: 150,
                             // crop: "fill"
-                        })      
+                        })
 
                         // here, we add the url for the photo
                         var _response = xtend(res[0].data, {
@@ -215,3 +215,4 @@ module.exports = {
     getByName,
     postOneMsg
 }
+
