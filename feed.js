@@ -111,9 +111,9 @@ function postOneMsg (keys, msg, file) {
         )
     )
         .then(res => {
-            console.log('res', res)
-            console.log('res.data.key', res.data.key)
-            console.log('msg.previous', msg.previous)
+            // console.log('res', res)
+            // console.log('res.data.key', res.data.key)
+            // console.log('msg.previous', msg.previous)
 
             if (res.data.key !== msg.previous) {
                 console.log('mismatch!!!!!', res.data.key, msg.previous)

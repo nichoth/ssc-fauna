@@ -25,8 +25,11 @@ test('get a feed', function (t) {
         })
 })
 
+var msg
+var file
+
 test('post one message', function (t) {
-    var file = 'data:image/png;base64,' +
+    file = 'data:image/png;base64,' +
         fs.readFileSync(__dirname + '/caracal.jpg', {
             encoding: 'base64'
         })
@@ -35,7 +38,7 @@ test('post one message', function (t) {
     hash.update(file)
     var _hash = hash.digest('base64')
 
-    var msg = ssc.createMsg(keys, null, {
+    msg = ssc.createMsg(keys, null, {
         type: 'test',
         text: 'woooo',
         mentions: [_hash]
@@ -72,6 +75,31 @@ test('get the feed again', function (t) {
         })
 })
 
+test('post another msg', function (t) {
+    var hash = createHash('sha256')
+    hash.update(file)
+    var _hash = hash.digest('base64')
+
+    var msg2 = ssc.createMsg(keys, msg, {
+        type: 'test',
+        text: 'woooo2',
+        mentions: [_hash]
+    })
+
+    postOneMsg(keys, msg2, file)
+        .then(res => {
+            t.equal(res.data.value.sequence, 2, 'should be the second message')
+            t.equal(res.data.value.content.text, 'woooo2', 'should have the right' +
+                'content')
+            t.ok(res.mentionUrls, 'should have img url')
+            t.end()
+        })
+        .catch(err => {
+            t.error(err)
+            t.end()
+        })
+})
+
 test('get a single post', function (t) {
     singlePost.get(postKey)
         .then(res => {
@@ -84,7 +112,6 @@ test('get a single post', function (t) {
             t.end()
         })
 })
-
 
 test('name the feed', function (t) {
     var msgContent = {
@@ -114,6 +141,7 @@ test('get a feed by name', function (t) {
             // console.log('**res**', res)
             // console.log('res content', res[0].value.content)
             t.ok(Array.isArray(res), 'should return an array')
+            t.ok(res.length >= 2, 'should return the right number msgs')
             t.equal(res[0].value.content.type, 'post', 'should return posts')
             t.end()
         })
