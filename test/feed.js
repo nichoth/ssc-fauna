@@ -5,6 +5,7 @@ var fs = require('fs')
 var feed = require('../feed')
 var singlePost = require('../single-post')
 var createHash = require('crypto').createHash
+var crypto = require("crypto");
 
 var abouts = require('../abouts')
 
@@ -39,7 +40,7 @@ test('post one message', function (t) {
     var _hash = hash.digest('base64')
 
     msg = ssc.createMsg(keys, null, {
-        type: 'test',
+        type: 'post',
         text: 'woooo',
         mentions: [_hash]
     })
@@ -81,7 +82,7 @@ test('post another msg', function (t) {
     var _hash = hash.digest('base64')
 
     var msg2 = ssc.createMsg(keys, msg, {
-        type: 'test',
+        type: 'post',
         text: 'woooo2',
         mentions: [_hash]
     })
@@ -113,11 +114,13 @@ test('get a single post', function (t) {
         })
 })
 
+var name = crypto.randomBytes(8).toString('hex');
+
 test('name the feed', function (t) {
     var msgContent = {
         type: 'about',
         about: keys.id,
-        name: 'fooo'
+        name: name
     }
     var msg = ssc.createMsg(keys, null, msgContent)
 
@@ -136,12 +139,16 @@ test('name the feed', function (t) {
 })
 
 test('get a feed by name', function (t) {
-    feed.getByName('fooo')
+    // console.log('name', name)
+    feed.getByName(name)
         .then(res => {
             // console.log('**res**', res)
-            // console.log('res content', res[0].value.content)
+            // console.log('my keys', keys)
             t.ok(Array.isArray(res), 'should return an array')
-            t.ok(res.length >= 2, 'should return the right number msgs')
+            var myPosts = res.filter(post => {
+                return post.value.author === keys.id
+            })
+            t.equal(myPosts.length, 2, 'should return the right number msgs')
             t.equal(res[0].value.content.type, 'post', 'should return posts')
             t.end()
         })

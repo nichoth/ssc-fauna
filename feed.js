@@ -19,26 +19,48 @@ cloudinary.config({
 
 
 function getByName (name) {
+
+
     return client.query(
         q.Map(
-            q.Map(
-                q.Paginate( q.Match(q.Index('about-by-name'), name) ),
-                q.Lambda(
-                    'aboutRef',
-                    q.Match(
-                        q.Index('author'),
-                        q.Select(
-                            ['data', 'value', 'content', 'about'],
-                            q.Get( q.Var('aboutRef') )
-                        )
-                    )
+            q.Paginate(q.Match(
+                q.Index('author'),
+                q.Select(
+                    ['data', 'value', 'content', 'about'],
+                    q.Get( q.Match(q.Index("about-by-name"), name) )
                 )
-            ),
-
+            )),
+        
             q.Lambda('postRef', q.Get(q.Var('postRef')))
         )
     )
-        .then(res => res.data.map(d => d.data))
+        .then(res => {
+            return res.data.map(d => d.data)
+        })
+
+
+
+
+    // return client.query(
+    //     q.Map(
+    //         q.Map(
+    //             q.Paginate( q.Match(q.Index('about-by-name'), name) ),
+    //             q.Lambda(
+    //                 'aboutRef',
+    //                 q.Match(
+    //                     q.Index('author'),
+    //                     q.Select(
+    //                         ['data', 'value', 'content', 'about'],
+    //                         q.Get( q.Var('aboutRef') )
+    //                     )
+    //                 )
+    //             )
+    //         ),
+
+    //         q.Lambda('postRef', q.Get(q.Var('postRef')))
+    //     )
+    // )
+    //     .then(res => res.data.map(d => d.data))
 }
 
 
