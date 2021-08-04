@@ -114,7 +114,7 @@ test('set the user name', function (t) {
     })
 
     abouts.post(userTwo, msg)
-        .then((res) => {
+        .then(() => {
             follow.get(keys.id)
                 .then(res => {
                     // console.log('set name response', res)

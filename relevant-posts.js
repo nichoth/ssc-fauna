@@ -26,6 +26,8 @@ function getWithFoafs (id) {
         // first we get everyone that `id` is following
         .then(res => res.data.map(d => d.data))
         .then(arr => {
+            if (!arr.length) return Promise.resolve([ [], [] ])
+
             var postProm = client.query(
                 q.Map(
                     q.Paginate(
@@ -65,8 +67,8 @@ function getWithFoafs (id) {
             return Promise.all([postProm, foafProm])
         })
         .then(([postRes, foafRes]) => [
-            postRes.data.map(d => d.data),
-            foafRes.data.map(d => d.data)
+            (postRes.data || []).map(d => d.data),
+            (foafRes.data || []).map(d => d.data)
         ])
         .then(([postArr, foafArr]) => {
             // get posts in here
