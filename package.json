@@ -1,7 +1,7 @@
 {
   "name": "@nichoth/ssc-fauna",
   "description": "SSC db built with [fauna db](https://fauna.com/)",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "main": "index.js",
   "directories": {
     "test": "test"
