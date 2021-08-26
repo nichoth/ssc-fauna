@@ -124,7 +124,8 @@ function getNames (followed) {
         })
 }
 
-async function post (author, keys, msg) {
+// keys needs to have { id, public }
+async function post (keys, msg) {
     try {
         var isValid = ssc.verifyObj(keys, null, msg)
     } catch (err) {
@@ -136,12 +137,20 @@ async function post (author, keys, msg) {
         throw new Error('invalid message')
     }
 
+    // console.log('****msg****', msg)
+
     // write a new 'follow' msg
     var msgHash = ssc.getId(msg)
+
+    // follow them,
+    // then get the profile for them
     return client.query(
-        q.Create(q.Collection('follow'), {
-            data: { value: msg, key: msgHash }
-        })
+        q.Do(
+            q.Create(q.Collection('follow'), {
+                data: { value: msg, key: msgHash }
+            }),
+            q.Get( q.Match(q.Index('profile-by-id'), msg.content.contact) ),
+        )
     )
         .then(res => res.data)
 

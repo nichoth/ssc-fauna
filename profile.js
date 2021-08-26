@@ -35,7 +35,7 @@ function post (id, data) {
                 q.Select('ref', q.Get(
                     q.Match(q.Index('profile-by-id'), id)
                 )),
-                { data: { ...data, about: id, author: id } },
+                { data: { ...data, about: id, author: id } }
             )
         )
     )

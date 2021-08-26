@@ -2,6 +2,7 @@ require('dotenv').config()
 var test = require('tape')
 var fs = require('fs')
 var follow = require('../follow')
+var profile = require('../profile')
 var avatar = require('../avatar')
 var abouts = require('../abouts')
 var ssc = require('@nichoth/ssc')
@@ -35,20 +36,33 @@ test('follow a user', function (t) {
     // need to create a msg for post req
     msg = ssc.createMsg(keys, null, msgContent)
 
-    follow.post(keys.id, keys, msg)
-        .then((res) => {
-            t.pass('should create a follow document')
-            t.equal(res.value.author, keys.id,
-                'should have the right user ID')
-            t.equal(res.value.content.contact, userTwo.id,
-                'should have the right contact in the message')
-            t.end()
+    // create a name for userTwo
+    profile.post(userTwo.id, { name: 'fooo' })
+        .then(() => {
+            return followThem()
         })
         .catch(err => {
-            console.log('***** err', err)
-            t.error(err)
-            t.end()
+            t.fail('got an error')
+            console.log('errrrrrr', err)
         })
+
+    function followThem () {
+        // this should return the profile document for the followed user
+        return follow.post(keys, msg)
+            .then((res) => {
+                t.pass('should create a follow document')
+                // the author is the person who wrote the message naming
+                // themselves
+                t.equal(res.author, userTwo.id,  
+                    'should have the right user ID')
+                t.end()
+            })
+            .catch(err => {
+                console.log('***** oh dear', err)
+                t.error(err)
+                t.end()
+            })
+    }
 })
 
 test('follow another user', function (t) {
@@ -59,20 +73,31 @@ test('follow another user', function (t) {
     }
 
     var msg2 = ssc.createMsg(keys, msg, msgContent)
-    follow.post(keys.id, keys, msg2)
-        .then((res) => {
-            t.pass('should create a follow document')
-            t.equal(res.value.author, keys.id,
-                'should have the right user ID')
-            t.equal(res.value.content.contact, userThree.id,
-                'should have the right contact in the message')
-            t.end()
+
+    profile.post(userThree.id, { name: 'barrr' })
+        .then(() => {
+            return _followThem()
         })
         .catch(err => {
-            console.log('***** err', err)
-            t.error(err)
-            t.end()
+            t.fail('got an error')
+            console.log('errrrrrr', err)
         })
+
+    function _followThem () {
+        return follow.post(keys, msg2)
+            .then((res) => {
+                t.pass('should create a follow document')
+                t.equal(res.name, 'barrr', 'should return the profile')
+                t.equal(res.author, userThree.id,
+                    'should have the right user ID')
+                t.end()
+            })
+            .catch(err => {
+                console.log('***** err', err)
+                t.error(err)
+                t.end()
+            })
+    }
 })
 
 test('get the list of follows', function (t) {

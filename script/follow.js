@@ -1,15 +1,27 @@
+require('dotenv').config()
 var faunadb = require('faunadb')
 var q = faunadb.query
 var client = new faunadb.Client({
     secret: process.env.FAUNADB_SERVER_SECRET
 })
 
+if (require.main === module) {
+    createFollow()
+}
+
 // this is for setting your username
-function createAbouts () {
+function createFollow () {
     return client.query(
-        q.CreateCollection({ name: 'follow' })
+        q.If(
+            q.Exists(
+                q.Collection('follow')
+            ),
+            'Collection exists',
+            q.CreateCollection({ name: 'follow' })
+        )
     )
         .then((ret) => {
+            console.log('aaaa', ret)
             createIndex()
         })
         .catch((err) => {
@@ -29,13 +41,23 @@ function createAbouts () {
 
     function createIndex () {
         return client.query(
-            q.CreateIndex({
-                name: 'following',
-                source: q.Collection('follow'),
-                terms: [{ field: ['data', 'value', 'author'] }]
-            })
+            q.If(
+                q.Exists(q.Index('following')),
+                'Index exists',
+                q.CreateIndex({
+                    name: 'following',
+                    source: q.Collection('follow'),
+                    terms: [{ field: ['data', 'value', 'author'] }]
+                })
+            )
         )
+            .then(res => {
+                console.log('ressss', res)
+            })
+            .catch(err => {
+                console.log('errrrr', err)
+            })
     }
 }
 
-module.exports = createAbouts
+module.exports = createFollow
