@@ -26,10 +26,11 @@ Promise.all([
         )
     )
 ])
-.then(() => {
-    require('./abouts')()
-    require('./avatar')()
-    require('./feed')()
-    require('./follow')()
-})
-.catch((err) => console.error('aaaaaaaa: %s', err))
+    .then(() => {
+        require('./abouts')()
+        require('./avatar')()
+        require('./feed')()
+        require('./follow')()
+        require('./profile')()
+    })
+    .catch((err) => console.error('aaaaaaaa: %s', err))

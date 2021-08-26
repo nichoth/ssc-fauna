@@ -45,7 +45,6 @@ async function get (author) {
 
 // for setting your user name
 async function post (keys, msg) {
-
     // get an existing about feed
     // to check if the merkle list matches up
     try {

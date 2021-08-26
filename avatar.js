@@ -41,8 +41,7 @@ function post (keys, file) {
 function getHash (file) {
     var hash = createHash('sha256')
     hash.update(file)
-    var _hash = hash.digest('base64')
-    return _hash
+    return hash.digest('base64')
 }
 
 module.exports = {
