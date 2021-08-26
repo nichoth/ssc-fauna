@@ -40,6 +40,8 @@ function post (id, file, msg) {
 }
 
 function writeToDB (id, msg) {
+    var key = ssc.getId(msg)
+
     return client.query(
         q.If(
             q.IsEmpty(
@@ -47,7 +49,7 @@ function writeToDB (id, msg) {
             ),
             q.Create(
                 q.Collection('profiles'),
-                { data: { key: '', ...msg, about: id, author: id } },
+                { data: { key: key, ...msg, author: id, about: id } },
             ),
             q.Replace(
                 q.Select('ref', q.Get(

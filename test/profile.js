@@ -30,7 +30,6 @@ test('set a new profile', t => {
 
     profile.post(keys.id, null, msg)
         .then(res => {
-            // console.log('resssssssss', res)
             t.equal(res.content.name, 'fooo', 'should return the new profile')
             t.equal(res.content.about, keys.id, 'should return the right id')
             t.end()

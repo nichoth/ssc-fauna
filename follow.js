@@ -142,6 +142,8 @@ async function post (keys, msg) {
     // write a new 'follow' msg
     var msgHash = ssc.getId(msg)
 
+    // console.log('***msg hash***', msgHash)
+
     // follow them,
     // then get the profile for them
     return client.query(

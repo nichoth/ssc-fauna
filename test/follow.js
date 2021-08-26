@@ -53,7 +53,14 @@ test('follow a user', function (t) {
                 t.pass('should create a follow document')
                 // the author is the person who wrote the message naming
                 // themselves
-                t.equal(res.author, userTwo.id,  
+                // TODO -- change this b/c it is in response to 'follow'
+                //   it's not clear who the auther is in this case
+                // TODO -- check that it returns the profile of followed
+                //   person
+                t.equal(res.name, 'fooo',
+                    'should return the user profile of the person that ' +
+                    'youre following')
+                t.equal(res.about, userTwo.id,  
                     'should have the right user ID')
                 t.end()
             })
@@ -131,32 +138,32 @@ test('get the list of follows', function (t) {
         })
 })
 
-test('set the user name', function (t) {
-    var msg = ssc.createMsg(userTwo, null, {
-        type: 'about',
-        about: userTwo.id,
-        name: 'fooo'
-    })
+// test('set the user name', function (t) {
+//     var msg = ssc.createMsg(userTwo, null, {
+//         type: 'about',
+//         about: userTwo.id,
+//         name: 'fooo'
+//     })
 
-    abouts.post(userTwo, msg)
-        .then(() => {
-            follow.get(keys.id)
-                .then(res => {
-                    // console.log('set name response', res)
-                    // console.log('----------------------------------')
-                    // console.log(res[userTwo.id].name.value)
-                    // .data.value.content.name
-                    t.equal(res[userTwo.id].name, 'fooo',
-                        'should have the user name in the response')
-                    t.end()
-                })
-        })
-        .catch(err => {
-            console.log('***** err', err)
-            t.error(err)
-            t.end()
-        })
-})
+//     abouts.post(userTwo, msg)
+//         .then(() => {
+//             follow.get(keys.id)
+//                 .then(res => {
+//                     // console.log('set name response', res)
+//                     // console.log('----------------------------------')
+//                     // console.log(res[userTwo.id].name.value)
+//                     // .data.value.content.name
+//                     t.equal(res[userTwo.id].name, 'fooo',
+//                         'should have the user name in the response')
+//                     t.end()
+//                 })
+//         })
+//         .catch(err => {
+//             console.log('***** err', err)
+//             t.error(err)
+//             t.end()
+//         })
+// })
 
 // TODO
 // test for an invalid message. the API function should return an error
