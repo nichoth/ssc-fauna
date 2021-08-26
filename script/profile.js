@@ -21,7 +21,7 @@ function createProfiles () {
     )
         .then(() => createIndex())
         .then(res => {
-            console.log('resssssss', res)
+            console.log('profile result', res)
         })
         .catch((err) => {
             console.error('oooooooo', err)
