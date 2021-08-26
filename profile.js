@@ -1,5 +1,8 @@
 var faunadb = require('faunadb')
-let cloudinary = require("cloudinary").v2;
+let cloudinary = require("cloudinary").v2
+var upload = require('./upload')
+var createHash = require('crypto').createHash
+var ssc = require('@nichoth/ssc')
 
 var q = faunadb.query
 var client = new faunadb.Client({
@@ -21,7 +24,22 @@ function get (id) {
         })
 }
 
-function post (id, data) {
+function post (id, file, msg) {
+    if (file) {
+        // @TODO -- check if the hashes match with in the msg
+        var hash = getHash(file)
+
+        return Promise.all([
+            upload(file, hash),
+            writeToDB(id, msg)
+        ])
+            .then(res => res[1])
+    }
+
+    return writeToDB(id, msg)
+}
+
+function writeToDB (id, msg) {
     return client.query(
         q.If(
             q.IsEmpty(
@@ -29,19 +47,25 @@ function post (id, data) {
             ),
             q.Create(
                 q.Collection('profiles'),
-                { data: { ...data, about: id, author: id } },
+                { data: { key: '', ...msg, about: id, author: id } },
             ),
             q.Replace(
                 q.Select('ref', q.Get(
                     q.Match(q.Index('profile-by-id'), id)
                 )),
-                { data: { ...data, about: id, author: id } }
+                { data: msg }
             )
         )
     )
         .then(res => {
             return res.data || res
         })
+}
+
+function getHash (file) {
+    var hash = createHash('sha256')
+    hash.update(file)
+    return hash.digest('base64')
 }
 
 module.exports = { get, post }

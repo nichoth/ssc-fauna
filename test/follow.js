@@ -37,7 +37,7 @@ test('follow a user', function (t) {
     msg = ssc.createMsg(keys, null, msgContent)
 
     // create a name for userTwo
-    profile.post(userTwo.id, { name: 'fooo' })
+    profile.post(userTwo.id, null, { name: 'fooo' })
         .then(() => {
             return followThem()
         })
@@ -74,7 +74,7 @@ test('follow another user', function (t) {
 
     var msg2 = ssc.createMsg(keys, msg, msgContent)
 
-    profile.post(userThree.id, { name: 'barrr' })
+    profile.post(userThree.id, null, { name: 'barrr' })
         .then(() => {
             return _followThem()
         })

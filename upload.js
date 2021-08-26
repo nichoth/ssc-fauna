@@ -22,4 +22,3 @@ function upload (file, _hash) {
 }
 
 module.exports = upload
-

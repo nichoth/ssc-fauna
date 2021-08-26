@@ -2,6 +2,8 @@ require('dotenv').config()
 var profile = require('../profile')
 var test = require('tape')
 var ssc = require('@nichoth/ssc')
+var fs = require('fs')
+var createHash = require('crypto').createHash
 
 var keys = ssc.createKeys()
 
@@ -19,10 +21,18 @@ test('non existant profile', t => {
 })
 
 test('set a new profile', t => {
-    profile.post(keys.id, { name: 'fooo' })
+    var msgContent = {
+        type: 'avatar',
+        about: keys.id,
+        name: 'fooo'
+    }
+    var msg = ssc.createMsg(keys, null, msgContent)
+
+    profile.post(keys.id, null, msg)
         .then(res => {
-            t.equal(res.name, 'fooo', 'should return the new profile')
-            t.equal(res.about, keys.id, 'should return the right id')
+            // console.log('resssssssss', res)
+            t.equal(res.content.name, 'fooo', 'should return the new profile')
+            t.equal(res.content.about, keys.id, 'should return the right id')
             t.end()
         })
         .catch(err => {
@@ -35,8 +45,8 @@ test('set a new profile', t => {
 test('get the profile we just made', t => {
     profile.get(keys.id)
         .then(res => {
-            t.equal(res.name, 'fooo', 'should return the right profile')
-            t.equal(res.author, keys.id, 'should return the right id')
+            t.equal(res.content.name, 'fooo',
+                'should return the right profile')
             t.end()
         })
         .catch(err => {
@@ -45,3 +55,37 @@ test('get the profile we just made', t => {
             t.end()
         })
 })
+
+test('set an avatar', t => {
+    // read binary data
+    var file = 'data:image/png;base64,' +
+        fs.readFileSync(__dirname + '/caracal.jpg', {
+            encoding: 'base64'
+        })
+
+    var msgContent = {
+        type: 'avatar',
+        about: keys.id,
+        avatar: getHash(file)
+    }
+
+    var msg = ssc.createMsg(keys, null, msgContent)
+
+    profile.post(keys.id, file, msg)
+        .then(res => {
+            t.equal(res.content.about, keys.id, 'should return the right id')
+            t.equal(res.content.avatar, getHash(file),
+                'should have the right image hash')
+            t.end()
+        })
+        .catch(err => {
+            console.log('cccccccc err', err)
+            t.end()
+        })
+})
+
+function getHash (file) {
+    var hash = createHash('sha256')
+    hash.update(file)
+    return hash.digest('base64')
+}
