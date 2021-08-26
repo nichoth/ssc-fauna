@@ -39,6 +39,9 @@ function post (id, data) {
             )
         )
     )
+        .then(res => {
+            return res.data || res
+        })
 }
 
 module.exports = { get, post }

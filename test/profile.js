@@ -21,8 +21,8 @@ test('non existant profile', t => {
 test('set a new profile', t => {
     profile.post(keys.id, { name: 'fooo' })
         .then(res => {
-            t.equal(res.data.name, 'fooo', 'should return the new profile')
-            t.equal(res.data.about, keys.id, 'should return the right id')
+            t.equal(res.name, 'fooo', 'should return the new profile')
+            t.equal(res.about, keys.id, 'should return the right id')
             t.end()
         })
         .catch(err => {
@@ -45,7 +45,3 @@ test('get the profile we just made', t => {
             t.end()
         })
 })
-
-// test('get a profile', t => {
-
-// })
