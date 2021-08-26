@@ -16,8 +16,9 @@ function get (id) {
     return client.query(
         q.Get(q.Match(q.Index('profile-by-id'), id))
     )
-        .then(doc => doc.data)
-        .catch(err => console.log('aaaarrrrrr', err))
+        .then(doc => {
+            return doc.data
+        })
 }
 
 function post (id, data) {
@@ -28,13 +29,13 @@ function post (id, data) {
             ),
             q.Create(
                 q.Collection('profiles'),
-                { data: { ...data, about: id } },
+                { data: { ...data, about: id, author: id } },
             ),
             q.Replace(
                 q.Select('ref', q.Get(
                     q.Match(q.Index('profile-by-id'), id)
                 )),
-                { data: { ...data, about: id } },
+                { data: { ...data, about: id, author: id } },
             )
         )
     )

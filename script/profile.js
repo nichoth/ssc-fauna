@@ -39,7 +39,7 @@ function createProfiles () {
                     q.CreateIndex({
                         name: 'profile-by-id',
                         source: q.Collection('profiles'),
-                        terms: [{ field: ['data', 'value', 'author'] }],
+                        terms: [{ field: ['data', 'author'] }],
                     })
                 )
             ),
@@ -53,7 +53,7 @@ function createProfiles () {
                     q.CreateIndex({
                         name: 'profile-by-name',
                         source: q.Collection('profiles'),
-                        terms: [{ field: ['data', 'value', 'name'] }]
+                        terms: [{ field: ['data', 'name'] }]
                     })
                 )
             )
