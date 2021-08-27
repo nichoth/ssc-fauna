@@ -8,7 +8,6 @@ var createHash = require('crypto').createHash
 var keys = ssc.createKeys()
 
 test('non existant profile', t => {
-    // need to create a user with the profile
     profile.get(keys.id)
         .then(res => {
             console.log('***got profile***', res)
@@ -31,8 +30,10 @@ test('set a new profile', t => {
 
     profile.post(keys.id, null, msg)
         .then(res => {
-            t.equal(res.value.content.name, 'fooo', 'should return the new profile')
-            t.equal(res.value.content.about, keys.id, 'should return the right id')
+            t.equal(res.value.content.name, 'fooo',
+                'should return the new profile')
+            t.equal(res.value.content.about, keys.id,
+                'should return the right id')
             t.end()
         })
         .catch(err => {
@@ -71,22 +72,27 @@ test('set an avatar', t => {
     var msgContent = {
         type: 'profile',
         about: keys.id,
-        avatar: getHash(file)
+        avatar: getHash(file),
+        name: 'bar'
     }
 
     var msg = ssc.createMsg(keys, null, msgContent)
 
     profile.post(keys.id, file, msg)
         .then(res => {
-            // console.log('resssssss', res)
-            t.equal(res.value.content.about, keys.id, 'should return the right id')
+            t.equal(res.value.content.about, keys.id,
+                'should return the right id')
             t.equal(res.value.content.avatar, getHash(file),
                 'should have the right image hash')
+            // this way the signature is still valid
+            // vs just merging the content objects on the server --
+            // we don't know how to sign that from here
+            t.equal(res.value.content.name, 'bar',
+                "should overwrite, not extend, the existing profile")
             t.end()
         })
         .catch(err => {
-            console.log('cccccccc err', err)
-            t.fail('errrrr')
+            t.fail(err)
             t.end()
         })
 })

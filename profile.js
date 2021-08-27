@@ -31,19 +31,14 @@ function get (id) {
         })
 }
 
-function post (id, file, _msg) {
-    // var msg = xtend(_msg, {})
+function post (id, file, msg) {
 
     return get(id)
         // extend the existing profile
-        .then(doc => {
-            // console.log('***the doc***', doc)
-            // console.log('**the doc.value**', doc.value)
-            // console.log('**the msg***', _msg)
-            var msg = xtend(doc.value, _msg)
-
+        .then(() => {
             if (file) {
-                // @TODO -- check if the hashes match with in the msg
+                // @TODO -- check if the hash matches with the hash in
+                //   the msg
                 var hash = getHash(file)
 
                 return Promise.all([
@@ -56,11 +51,8 @@ function post (id, file, _msg) {
             return writeToDB(id, msg)
         })
         .catch(err => {
-            // console.log('in here err', err)
             if (err.toString().includes('instance not found')) {
                 // is a new profile, need to write it
-                console.log('aaaaaa')
-                var msg = _msg
                 return writeToDB(id, msg)
             }
             throw err
