@@ -62,8 +62,6 @@ function post (id, file, msg) {
 function writeToDB (id, msg) {
     var key = ssc.getId(msg)
 
-    // console.log('**msg**', msg)
-
     return client.query(
         q.If(
             q.IsEmpty(
