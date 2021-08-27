@@ -22,28 +22,55 @@ function get (id) {
     )
         .then(doc => {
             return xtend(doc.data, {
-                avatar: doc.data.avatar || null
+                value: xtend(doc.data.value, {
+                    content: xtend(doc.data.value.content, {
+                        avatar: doc.data.value.content.avatar || null
+                    })
+                })
             })
         })
 }
 
-function post (id, file, msg) {
-    if (file) {
-        // @TODO -- check if the hashes match with in the msg
-        var hash = getHash(file)
+function post (id, file, _msg) {
+    // var msg = xtend(_msg, {})
 
-        return Promise.all([
-            upload(file, hash),
-            writeToDB(id, msg)
-        ])
-            .then(res => res[1])
-    }
+    return get(id)
+        // extend the existing profile
+        .then(doc => {
+            // console.log('***the doc***', doc)
+            // console.log('**the doc.value**', doc.value)
+            // console.log('**the msg***', _msg)
+            var msg = xtend(doc.value, _msg)
 
-    return writeToDB(id, msg)
+            if (file) {
+                // @TODO -- check if the hashes match with in the msg
+                var hash = getHash(file)
+
+                return Promise.all([
+                    upload(file, hash),
+                    writeToDB(id, msg)
+                ])
+                    .then(res => res[1])
+            }
+
+            return writeToDB(id, msg)
+        })
+        .catch(err => {
+            // console.log('in here err', err)
+            if (err.toString().includes('instance not found')) {
+                // is a new profile, need to write it
+                console.log('aaaaaa')
+                var msg = _msg
+                return writeToDB(id, msg)
+            }
+            throw err
+        })
 }
 
 function writeToDB (id, msg) {
     var key = ssc.getId(msg)
+
+    // console.log('**msg**', msg)
 
     return client.query(
         q.If(
@@ -52,13 +79,13 @@ function writeToDB (id, msg) {
             ),
             q.Create(
                 q.Collection('profiles'),
-                { data: { key: key, value: msg, author: id, about: id } },
+                { data: { key: key, value: msg } },
             ),
             q.Replace(
                 q.Select('ref', q.Get(
                     q.Match(q.Index('profile-by-id'), id)
                 )),
-                { data: msg }
+                { data: { key: key, value: msg } }
             )
         )
     )

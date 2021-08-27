@@ -45,8 +45,13 @@ test('set a new profile', t => {
 test('get the profile we just made', t => {
     profile.get(keys.id)
         .then(res => {
+            var content = res.value.content
+            t.ok(res.key, 'has the msg key')
             t.equal(res.value.content.name, 'fooo',
-                'should return the right profile')
+                'should return the right profile name')
+            t.equal(content.about, keys.id, 'should the the right user id')
+            t.equal(content.type, 'profile', 'should have the right msg type')
+            t.equal(content.avatar, null, 'should have the avatar as null')
             t.end()
         })
         .catch(err => {
@@ -64,7 +69,7 @@ test('set an avatar', t => {
         })
 
     var msgContent = {
-        type: 'avatar',
+        type: 'profile',
         about: keys.id,
         avatar: getHash(file)
     }
@@ -73,13 +78,15 @@ test('set an avatar', t => {
 
     profile.post(keys.id, file, msg)
         .then(res => {
-            t.equal(res.content.about, keys.id, 'should return the right id')
-            t.equal(res.content.avatar, getHash(file),
+            // console.log('resssssss', res)
+            t.equal(res.value.content.about, keys.id, 'should return the right id')
+            t.equal(res.value.content.avatar, getHash(file),
                 'should have the right image hash')
             t.end()
         })
         .catch(err => {
             console.log('cccccccc err', err)
+            t.fail('errrrr')
             t.end()
         })
 })
