@@ -3,6 +3,7 @@ let cloudinary = require("cloudinary").v2
 var upload = require('./upload')
 var createHash = require('crypto').createHash
 var ssc = require('@nichoth/ssc')
+var xtend = require('xtend')
 
 var q = faunadb.query
 var client = new faunadb.Client({
@@ -20,7 +21,9 @@ function get (id) {
         q.Get(q.Match(q.Index('profile-by-id'), id))
     )
         .then(doc => {
-            return doc.data
+            return xtend(doc.data, {
+                avatar: doc.data.avatar || null
+            })
         })
 }
 
@@ -49,7 +52,7 @@ function writeToDB (id, msg) {
             ),
             q.Create(
                 q.Collection('profiles'),
-                { data: { key: key, ...msg, author: id, about: id } },
+                { data: { key: key, value: msg, author: id, about: id } },
             ),
             q.Replace(
                 q.Select('ref', q.Get(

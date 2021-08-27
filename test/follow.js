@@ -50,14 +50,13 @@ test('follow a user', function (t) {
         // this should return the profile document for the followed user
         return follow.post(keys, msg)
             .then((res) => {
+                // console.log('resssss', res)
                 t.pass('should create a follow document')
                 // the author is the person who wrote the message naming
                 // themselves
-                // TODO -- change this b/c it is in response to 'follow'
-                //   it's not clear who the auther is in this case
                 // TODO -- check that it returns the profile of followed
                 //   person
-                t.equal(res.name, 'fooo',
+                t.equal(res.value.name, 'fooo',
                     'should return the user profile of the person that ' +
                     'youre following')
                 t.equal(res.about, userTwo.id,  
@@ -94,7 +93,7 @@ test('follow another user', function (t) {
         return follow.post(keys, msg2)
             .then((res) => {
                 t.pass('should create a follow document')
-                t.equal(res.name, 'barrr', 'should return the profile')
+                t.equal(res.value.name, 'barrr', 'should return the profile')
                 t.equal(res.author, userThree.id,
                     'should have the right user ID')
                 t.end()

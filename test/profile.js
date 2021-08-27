@@ -12,6 +12,7 @@ test('non existant profile', t => {
     profile.get(keys.id)
         .then(res => {
             console.log('***got profile***', res)
+            t.end()
         })
         .catch(err => {
             t.ok(err.toString().includes('instance not found'),
@@ -22,7 +23,7 @@ test('non existant profile', t => {
 
 test('set a new profile', t => {
     var msgContent = {
-        type: 'avatar',
+        type: 'profile',
         about: keys.id,
         name: 'fooo'
     }
@@ -30,8 +31,8 @@ test('set a new profile', t => {
 
     profile.post(keys.id, null, msg)
         .then(res => {
-            t.equal(res.content.name, 'fooo', 'should return the new profile')
-            t.equal(res.content.about, keys.id, 'should return the right id')
+            t.equal(res.value.content.name, 'fooo', 'should return the new profile')
+            t.equal(res.value.content.about, keys.id, 'should return the right id')
             t.end()
         })
         .catch(err => {
@@ -44,7 +45,7 @@ test('set a new profile', t => {
 test('get the profile we just made', t => {
     profile.get(keys.id)
         .then(res => {
-            t.equal(res.content.name, 'fooo',
+            t.equal(res.value.content.name, 'fooo',
                 'should return the right profile')
             t.end()
         })
