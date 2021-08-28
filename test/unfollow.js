@@ -53,7 +53,6 @@ test('follow then unfollow someone', function (t) {
             })
     }
 
-
     function _unfollow () {
         // need to create a msg for post req
         var unfollowMsg = ssc.createMsg(keys, null, {

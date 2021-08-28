@@ -28,9 +28,12 @@ function post (keys, msg) {
             q.Select(
                 ["ref"],
                 q.Get(
-                    // need to find the `follow` msg with a given
-                    // contact id
-                    q.Match( q.Index('followed'), msg.content.contact )
+                    q.Intersection(
+                        // need to find the `follow` msg with a given
+                        // contact id
+                        q.Match( q.Index('followed'), msg.content.contact ),
+                        q.Match( q.Index('following'), keys.id )
+                    )
                 )
             )
         )
