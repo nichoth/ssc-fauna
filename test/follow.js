@@ -33,12 +33,17 @@ test('follow a user', function (t) {
         author: keys.id
     }
 
-    // need to create a msg for post req
-    msg = ssc.createMsg(keys, null, msgContent)
-
     // create a name for userTwo
-    profile.post(userTwo.id, null, { name: 'fooo' })
-        .then(() => {
+    var profileMsg = ssc.createMsg(userTwo, null, {
+        content: {
+            type: 'profile',
+            about: userTwo.id,
+            name: 'fooo'
+        }
+    })
+    profile.post(userTwo.id, null, profileMsg)
+        .then((res) => {
+            console.log('profile res', res)
             return followThem()
         })
         .catch(err => {
@@ -47,6 +52,9 @@ test('follow a user', function (t) {
         })
 
     function followThem () {
+        // need to create a msg for post req
+        msg = ssc.createMsg(keys, null, msgContent)
+
         // this should return the profile document for the followed user
         return follow.post(keys, msg)
             .then((res) => {

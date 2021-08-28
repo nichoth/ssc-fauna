@@ -28,6 +28,7 @@ test('set a new profile', t => {
     }
     var msg = ssc.createMsg(keys, null, msgContent)
 
+    // (id, file, msg)
     profile.post(keys.id, null, msg)
         .then(res => {
             t.equal(res.value.content.name, 'fooo',
