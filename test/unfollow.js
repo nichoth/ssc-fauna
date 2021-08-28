@@ -7,6 +7,7 @@ var follow = require('../follow')
 
 var keys = ssc.createKeys()
 var userTwo = ssc.createKeys()
+var userThree = ssc.createKeys()
 
 function createProfile (user) {
     return profile.post(user.id, null, ssc.createMsg(user, null, {
@@ -45,9 +46,6 @@ function _unfollow (user, contact) {
     })
 
     return unfollow.post(keys, unfollowMsg)
-        .then(res => {
-            return res
-        })
 }
 
 test('follow then unfollow someone', function (t) {
@@ -63,12 +61,12 @@ test('follow then unfollow someone', function (t) {
                 'should have the right user ID')
             return res
         })
-        .then(res => {
+        .then(() => {
             return _unfollow(keys, userTwo)
         })
         .then(res => {
             t.pass('unfollowed')
-            t.equal(res.contact, userTwo.id,
+            t.equal(res.value.content.contact, userTwo.id,
                 'should send back the id of who you unfollowed')
             t.end()
         })
@@ -81,5 +79,22 @@ test('follow then unfollow someone', function (t) {
 })
 
 test('another user follows, then you unfollow', t => {
-    t.end()
+    Promise.all([
+        // first we re-follow them
+        followThem(keys, userTwo),
+        // now userThree is following userTwo
+        followThem(userThree, userTwo)
+    ])
+        .then(() => {
+            // now userOne needs to unfollow userTwo
+            return _unfollow(keys, userTwo)
+        })
+        .then(res => {
+            t.equal(res.value.content.contact, userTwo.id)
+            t.end()
+        })
+        .catch(err => {
+            t.fail(err, 'error')
+            e.end()
+        })
 })

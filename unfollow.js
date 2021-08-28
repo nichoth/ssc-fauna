@@ -38,11 +38,8 @@ function post (keys, msg) {
             )
         )
     )
-        .then(res => {
-            return {
-                type: 'unfollow', 
-                contact: res.data.value.content.contact
-            }
+        .then(() => {
+            return { value: msg }
         })
 
 }
