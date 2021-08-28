@@ -4,7 +4,6 @@ var fs = require('fs')
 var follow = require('../follow')
 var profile = require('../profile')
 var avatar = require('../avatar')
-// var abouts = require('../abouts')
 var ssc = require('@nichoth/ssc')
 
 var keys = ssc.createKeys()
@@ -149,34 +148,3 @@ test('get the list of follows', function (t) {
                 })
         })
 })
-
-// test('set the user name', function (t) {
-//     var msg = ssc.createMsg(userTwo, null, {
-//         type: 'about',
-//         about: userTwo.id,
-//         name: 'fooo'
-//     })
-
-//     abouts.post(userTwo, msg)
-//         .then(() => {
-//             follow.get(keys.id)
-//                 .then(res => {
-//                     // console.log('set name response', res)
-//                     // console.log('----------------------------------')
-//                     // console.log(res[userTwo.id].name.value)
-//                     // .data.value.content.name
-//                     t.equal(res[userTwo.id].name, 'fooo',
-//                         'should have the user name in the response')
-//                     t.end()
-//                 })
-//         })
-//         .catch(err => {
-//             console.log('***** err', err)
-//             t.error(err)
-//             t.end()
-//         })
-// })
-
-// TODO
-// test for an invalid message. the API function should return an error
-
