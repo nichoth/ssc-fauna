@@ -66,6 +66,8 @@ test('follow then unfollow someone', function (t) {
             .then(res => {
                 console.log('**unfollow response**', res)
                 t.pass('unfollowed')
+                t.equal(res.contact, userTwo.id,
+                    'should send back the id of who you unfollowed')
                 t.end()
             })
             .catch(err => {
