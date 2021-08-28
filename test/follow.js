@@ -4,7 +4,7 @@ var fs = require('fs')
 var follow = require('../follow')
 var profile = require('../profile')
 var avatar = require('../avatar')
-var abouts = require('../abouts')
+// var abouts = require('../abouts')
 var ssc = require('@nichoth/ssc')
 
 var keys = ssc.createKeys()

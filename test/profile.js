@@ -88,7 +88,7 @@ test('set an avatar', t => {
             // vs just merging the content objects on the server --
             // we don't know how to sign that from here
             t.equal(res.value.content.name, 'bar',
-                "should overwrite, not extend, the existing profile")
+                "should overwrite the existing profile data")
             t.end()
         })
         .catch(err => {
