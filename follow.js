@@ -137,7 +137,7 @@ async function post (keys, msg) {
         throw new Error('invalid message')
     }
 
-    console.log('****msg****', msg)
+    // console.log('****msg****', msg)
 
     // write a new 'follow' msg
     var msgHash = ssc.getId(msg)

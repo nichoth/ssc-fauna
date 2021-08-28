@@ -27,23 +27,16 @@ test('get the list of follows', function (t) {
 var msg
 
 test('follow a user', function (t) {
-    var msgContent = {
-        type: 'follow',
-        contact: userTwo.id,
-        author: keys.id
-    }
-
     // create a name for userTwo
     var profileMsg = ssc.createMsg(userTwo, null, {
-        content: {
-            type: 'profile',
-            about: userTwo.id,
-            name: 'fooo'
-        }
+        type: 'profile',
+        about: userTwo.id,
+        name: 'fooo'
     })
+
     profile.post(userTwo.id, null, profileMsg)
         .then((res) => {
-            console.log('profile res', res)
+            // console.log('profile res', res)
             return followThem()
         })
         .catch(err => {
@@ -52,22 +45,28 @@ test('follow a user', function (t) {
         })
 
     function followThem () {
+        var msgContent = {
+            type: 'follow',
+            contact: userTwo.id,
+            author: keys.id
+        }
+
         // need to create a msg for post req
         msg = ssc.createMsg(keys, null, msgContent)
 
         // this should return the profile document for the followed user
         return follow.post(keys, msg)
             .then((res) => {
-                // console.log('resssss', res)
+                // console.log('**ressss to follow.post**', res)
                 t.pass('should create a follow document')
                 // the author is the person who wrote the message naming
                 // themselves
                 // TODO -- check that it returns the profile of followed
                 //   person
-                t.equal(res.value.name, 'fooo',
+                t.equal(res.value.content.name, 'fooo',
                     'should return the user profile of the person that ' +
                     'youre following')
-                t.equal(res.about, userTwo.id,  
+                t.equal(res.value.content.about, userTwo.id,  
                     'should have the right user ID')
                 t.end()
             })
@@ -86,9 +85,15 @@ test('follow another user', function (t) {
         author: keys.id
     }
 
-    var msg2 = ssc.createMsg(keys, msg, msgContent)
+    var followMsg2 = ssc.createMsg(keys, msg, msgContent)
 
-    profile.post(userThree.id, null, { name: 'barrr' })
+    profTwoMsg = ssc.createMsg(userThree, null, {
+        type: 'profile',
+        about: userThree.id,
+        name: 'barrr'
+    })
+
+    profile.post(userThree.id, null, profTwoMsg)
         .then(() => {
             return _followThem()
         })
@@ -98,11 +103,11 @@ test('follow another user', function (t) {
         })
 
     function _followThem () {
-        return follow.post(keys, msg2)
+        return follow.post(keys, followMsg2)
             .then((res) => {
                 t.pass('should create a follow document')
-                t.equal(res.value.name, 'barrr', 'should return the profile')
-                t.equal(res.author, userThree.id,
+                t.equal(res.value.content.name, 'barrr', 'should return the profile')
+                t.equal(res.value.author, userThree.id,
                     'should have the right user ID')
                 t.end()
             })
