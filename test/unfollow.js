@@ -90,7 +90,10 @@ test('another user follows, then you unfollow', t => {
             return _unfollow(keys, userTwo)
         })
         .then(res => {
-            t.equal(res.value.content.contact, userTwo.id)
+            t.equal(res.value.content.contact, userTwo.id,
+                'should send the unfollow msg back to you')
+            t.equal(res.value.author, keys.id,
+                'should return the id of who is unfollowing')
             t.end()
         })
         .catch(err => {
