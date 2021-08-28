@@ -7,21 +7,15 @@ var follow = require('../follow')
 
 var keys = ssc.createKeys()
 var userTwo = ssc.createKeys()
-// var userThree = ssc.createKeys()
 
 test('follow then unfollow someone', function (t) {
-    var msgContent = {
-        type: 'follow',
-        contact: userTwo.id,
-        author: keys.id
-    }
-
-    // need to create a msg for post req
-    msg = ssc.createMsg(keys, null, msgContent)
-
     // create a name for userTwo
-    profile.post(userTwo.id, null, { name: 'fooo' })
-        .then(() => {
+    profile.post(userTwo.id, null, ssc.createMsg(keys, null, {
+        type: 'profile',
+        about: userTwo.id,
+        name: 'fooo'
+    }))
+        .then((res) => {
             return followThem()
         })
         .catch(err => {
@@ -31,19 +25,23 @@ test('follow then unfollow someone', function (t) {
         })
 
     function followThem () {
+        var msgContent = {
+            type: 'follow',
+            contact: userTwo.id,
+            author: keys.id
+        }
+
+        // need to create a msg for post req
+        msg = ssc.createMsg(keys, null, msgContent)
+
         // this should return the profile document for the followed user
         return follow.post(keys, msg)
             .then((res) => {
-                console.log('follow res', res)
                 t.pass('should create a follow document')
-                // the author is the person who wrote the message naming
-                // themselves
-                // TODO -- check that it returns the profile of followed
-                //   person
-                t.equal(res.value.name, 'fooo',
+                t.equal(res.value.content.name, 'fooo',
                     'should return the user profile of the person that ' +
                     'youre following')
-                t.equal(res.about, userTwo.id,  
+                t.equal(res.value.content.about, userTwo.id,  
                     'should have the right user ID')
 
                 return _unfollow()
@@ -59,7 +57,7 @@ test('follow then unfollow someone', function (t) {
     function _unfollow () {
         // need to create a msg for post req
         var unfollowMsg = ssc.createMsg(keys, null, {
-            type: 'follow',
+            type: 'unfollow',
             contact: userTwo.id,
             author: keys.id
         })

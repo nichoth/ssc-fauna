@@ -6,31 +6,41 @@ var client = new faunadb.Client({
     secret: process.env.FAUNADB_SERVER_SECRET
 })
 
+// @/BUNCQAxVmy3kGsOq7FFEnAiGYVmGQ/QlOjH9C4eonk=.ed25519
+
 // keys needs to have { id, public }
 function post (keys, msg) {
     try {
         var isValid = ssc.verifyObj(keys, null, msg)
     } catch (err) {
         console.log('not isvalid', isValid, err)
-        throw err
+        return Promise.reject('invalid message')
     }
 
+    // console.log('***msg***', msg)
+
     if (!isValid) {
-        throw new Error('invalid message')
+        return Promise.reject('invalid message')
     }
 
     return client.query(
         q.Delete(
-            // delete the invitation since it was used once now
             q.Select(
                 ["ref"],
                 q.Get(
-                    q.Match( q.Index('invitation-by-code'), code )
+                    // need to find the `follow` msg with a given
+                    // contact id
+                    q.Match( q.Index('followed'), msg.content.contact )
                 )
             )
         )
     )
-        .then(res => res.data)
+        .then(res => {
+            return {
+                type: 'unfollow', 
+                contact: res.data.value.content.contact
+            }
+        })
 
 }
 

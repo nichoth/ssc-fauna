@@ -34,7 +34,7 @@ test('follow a user', function (t) {
     })
 
     profile.post(userTwo.id, null, profileMsg)
-        .then((res) => {
+        .then(() => {
             // console.log('profile res', res)
             return followThem()
         })
