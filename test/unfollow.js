@@ -66,6 +66,8 @@ test('follow then unfollow someone', function (t) {
         })
         .then(res => {
             t.pass('unfollowed')
+            t.equal(res.value.content.type, 'unfollow',
+                'should have the right msg type')
             t.equal(res.value.content.contact, userTwo.id,
                 'should send back the id of who you unfollowed')
             t.end()
@@ -93,7 +95,7 @@ test('another user follows, then you unfollow', t => {
             t.equal(res.value.content.contact, userTwo.id,
                 'should send the unfollow msg back to you')
             t.equal(res.value.author, keys.id,
-                'should return the id of who is unfollowing')
+                'should return the id of who is doing the unfollowing')
             t.end()
         })
         .catch(err => {
