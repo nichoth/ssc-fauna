@@ -21,6 +21,7 @@ function get (id) {
         q.Get(q.Match(q.Index('profile-by-id'), id))
     )
         .then(doc => {
+            // console.log('**profile doc**', doc.data.value.content)
             return xtend(doc.data, {
                 value: xtend(doc.data.value, {
                     content: xtend(doc.data.value.content, {

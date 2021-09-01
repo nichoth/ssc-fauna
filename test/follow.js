@@ -26,14 +26,19 @@ test('get the list of follows', function (t) {
 var msg
 
 test('follow a user', function (t) {
+    // create a user 1 name
+    profile.post(keys.id, null, ssc.createMsg(keys, null, {
+        type: 'profile',
+        about: keys.id,
+        name: 'aaaaaa'
+    }))
+
     // create a name for userTwo
-    var profileMsg = ssc.createMsg(userTwo, null, {
+    profile.post(userTwo.id, null, ssc.createMsg(userTwo, null, {
         type: 'profile',
         about: userTwo.id,
         name: 'fooo'
-    })
-
-    profile.post(userTwo.id, null, profileMsg)
+    }))
         .then(() => {
             // console.log('profile res', res)
             return followThem()
@@ -84,15 +89,13 @@ test('follow another user', function (t) {
         author: keys.id
     }
 
-    var followMsg2 = ssc.createMsg(keys, msg, msgContent)
+    var followMsg3 = ssc.createMsg(keys, msg, msgContent)
 
-    profTwoMsg = ssc.createMsg(userThree, null, {
+    profile.post(userThree.id, null, ssc.createMsg(userThree, null, {
         type: 'profile',
         about: userThree.id,
         name: 'barrr'
-    })
-
-    profile.post(userThree.id, null, profTwoMsg)
+    }))
         .then(() => {
             return _followThem()
         })
@@ -102,7 +105,7 @@ test('follow another user', function (t) {
         })
 
     function _followThem () {
-        return follow.post(keys, followMsg2)
+        return follow.post(keys, followMsg3)
             .then((res) => {
                 t.pass('should create a follow document')
                 t.equal(res.value.content.name, 'barrr', 'should return the profile')
@@ -125,6 +128,8 @@ test('get the list of follows', function (t) {
                 'userId => profile')
             t.ok(res[userTwo.id], 'should have a followed userId')
             t.ok(res[userThree.id], 'should have a followed userId')
+            t.equal(res[userThree.id].name, 'barrr',
+                'should have the profile info')
             t.end()
         })
         .catch(err => {

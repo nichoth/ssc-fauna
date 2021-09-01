@@ -26,127 +26,41 @@ cloudinary.config({
 // q.Get( q.Match(q.Index('profile-by-id'), msg.content.contact) ),
 
 function get (author) {
+
+    // client.query(
+    //     q.Get(q.Match(q.Index('profile-by-id'), author))
+    // )
+    //     .then(res => console.log('***aaaa***', res.data))
+    //     .catch(err => console.log('****aaarrrrr***', err))
+
     return client.query(
         q.Map(
-            q.Paginate(
-                // get everyone that author is following
-                q.Match(q.Index('following'), author)
-            ),
-            q.Lambda(
-                'msg',
-                // get the most recent profile msg
-                q.Get(
-                    q.Match(q.Index('profile-by-id')),
-                    q.Select(['content', 'contact'], q.Var('user'))
+            q.Paginate( q.Match(q.Index('following'), author) ),
+            q.Lambda('msg', q.Get(
+                q.Match(
+                    q.Index('profile-by-id'),
+                    q.Select(
+                        ['data', 'value', 'content', 'contact'],
+                        q.Get(q.Var('msg'))
+                    )
                 )
-            ),
-        )
-    )
-        .then(res => res.data)
-}
-
-
-
-function get (author) {
-    return getFollowed(author)
-        .then(followed => {
-            var _followed = followed.map(res => {
-                return res.data.value.content.contact
-            })
-            return Promise.all([
-                Promise.resolve(_followed),
-                getAvatars(_followed),
-                getNames(_followed)
-            ])
-        })
-        .then(([followed, avas, names]) => {
-            var fols = followed.reduce((acc, id, i) => {
-
-                var slugslug = null
-                var ava = (avas && avas[i] && avas[i][0]) ?
-                    avas[i][0].data :
-                    null
-                if (ava && ava.avatarLink) {
-                    var slugifiedHash = encodeURIComponent('' + ava.avatarLink)
-                    slugslug = encodeURIComponent(slugifiedHash)
-                }
-
-                acc[id] = {
-                    id: id,
-                    avatarUrl: cloudinary.url(slugslug),
-                    avatar: ava,
-                    name: (names && names[i]) ?
-                        (names[i] && names[i][0] &&
-                            names[i][0].data.value.content.name) :
-                        null
-                }
-                return acc
-            }, {})
-
-            return fols
-        })
-}
-
-function getFollowed (author) {
-    return client.query(
-        q.Map(
-            q.Paginate(
-                q.Match(q.Index('following'), author)
-            ),
-            q.Lambda( 'followMsg', q.Get(q.Var('followMsg')) )
-        )
-    )
-        .then(res => res.data)
-}
-
-function getAvatars (followed) {
-    return client.query(
-        q.Map(
-            // followed,
-            followed,
-            q.Lambda(
-                'id',
-                q.Map(
-                    q.Paginate(
-                        q.Match(q.Index('avatar-by-id'), q.Var('id')),
-                    ),
-                    q.Lambda('msg', q.Get(q.Var('msg')))
-                )
-            )
+            ))
         )
     )
         .then(res => {
-            var _res = res.map(doc => doc.data)
-            return _res
+            return res.data
+                .map(d => d.data)
+                // convert to a map of userID => profile
+                .reduce((acc, msg) => {
+                    acc[msg.value.content.about] = msg.value.content
+                    return acc
+                }, {})
         })
         .catch(err => {
-            console.log('***ava errrrrrr', err)
+            console.log('errrrr', err)
         })
 }
 
-function getNames (followed) {
-    return client.query(
-        q.Map(
-            followed,
-            q.Lambda(
-                'id',
-                q.Map(
-                    q.Paginate(
-                        q.Match(q.Index('about-by-author'), q.Var('id')),
-                    ),
-                    q.Lambda('msg', q.Get(q.Var('msg')))
-                )
-            )
-        )
-    )
-        .then(res => {
-            var _res = res.map(doc => doc.data)
-            return _res
-        })
-        .catch(err => {
-            console.log('***name errrrrrr', err)
-        })
-}
 
 // keys needs to have { id, public }
 async function post (keys, msg) {
