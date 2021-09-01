@@ -121,10 +121,10 @@ test('follow another user', function (t) {
 test('get the list of follows', function (t) {
     follow.get(keys.id)
         .then(res => {
-            console.log('follow.get res', res)
             t.equal(Object.keys(res).length, 2, 'should return a map of ' +
                 'userId => profile')
             t.ok(res[userTwo.id], 'should have a followed userId')
+            t.ok(res[userThree.id], 'should have a followed userId')
             t.end()
         })
         .catch(err => {
