@@ -23,6 +23,30 @@ cloudinary.config({
 // following: true 
 // }
 
+// q.Get( q.Match(q.Index('profile-by-id'), msg.content.contact) ),
+
+function get (author) {
+    return client.query(
+        q.Map(
+            q.Paginate(
+                // get everyone that author is following
+                q.Match(q.Index('following'), author)
+            ),
+            q.Lambda(
+                'msg',
+                // get the most recent profile msg
+                q.Get(
+                    q.Match(q.Index('profile-by-id')),
+                    q.Select(['content', 'contact'], q.Var('user'))
+                )
+            ),
+        )
+    )
+        .then(res => res.data)
+}
+
+
+
 function get (author) {
     return getFollowed(author)
         .then(followed => {

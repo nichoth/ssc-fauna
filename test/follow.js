@@ -119,32 +119,16 @@ test('follow another user', function (t) {
 })
 
 test('get the list of follows', function (t) {
-    var file = 'data:image/png;base64,' +
-        fs.readFileSync(__dirname + '/caracal.jpg', {
-            encoding: 'base64'
+    follow.get(keys.id)
+        .then(res => {
+            console.log('follow.get res', res)
+            t.equal(Object.keys(res).length, 2, 'should return a map of ' +
+                'userId => profile')
+            t.ok(res[userTwo.id], 'should have a followed userId')
+            t.end()
         })
-    avatar.post(userTwo, file)
-        .then(() => {
-            follow.get(keys.id)
-                .then(res => {
-                    // should return a map of { userID => profile data }
-                    // where `userID` is a person you are following
-
-                    t.ok(res[userTwo.id].avatarUrl,
-                        'should return a url for the avatar')
-
-                    t.ok(res[userTwo.id], 'should return a map')
-                    t.equal(res[userTwo.id].id, userTwo.id,
-                        'should have user two in the follow data')
-                    t.equal(res[userThree.id].id, userThree.id,
-                        'should have user three in the follow data')
-
-                    t.end()
-                })
-                .catch(err => {
-                    console.log('boooooooooo2', err)
-                    t.error(err)
-                    t.end()
-                })
+        .catch(err => {
+            t.fail(err.toString())
+            t.end()
         })
 })
