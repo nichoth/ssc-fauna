@@ -59,16 +59,16 @@ test('get relevant posts', function (t) {
         return follow.post(userOne, msg)
     }
 
-        // get the file
-        var file = 'data:image/jpg;base64,' +
-            fs.readFileSync(__dirname + '/caracal.jpg', {
-                encoding: 'base64'
-            })
+    // get the file
+    var file = 'data:image/jpg;base64,' +
+        fs.readFileSync(__dirname + '/caracal.jpg', {
+            encoding: 'base64'
+        })
 
-        // get the file hash for the `mentions` array
-        var hash = createHash('sha256')
-        hash.update(file)
-        var _hash = hash.digest('base64')
+    // get the file hash for the `mentions` array
+    var hash = createHash('sha256')
+    hash.update(file)
+    var _hash = hash.digest('base64')
 
     // create a `post` msg
     var msg2 = ssc.createMsg(userTwo, null, {
@@ -143,21 +143,37 @@ test('call foafs when there are no foafs', function (t) {
 })
 
 test('foafs', function (t) {
-    var msgContent = {
-        type: 'follow',
-        contact: userThree.id,
-        author: userTwo.id
-    }
-
-
-
     // create a profile for userThree
+    // we create a profile then follow them here
+    var profileMsg = ssc.createMsg(userThree, null, {
+        type: 'profile',
+        about: userThree.id,
+        name: 'barrr'
+    })
+    var profileProm = profile.post(userTwo.id, null, profileMsg)
+        .then(res => {
+            t.equal(res.value.content.name, 'barrr',
+                'should return the new profile')
+            t.equal(res.value.content.about, userThree.id,
+                'should return the right id')
+            return createfollowProm()
+        })
+        .catch(err => {
+            t.fail('got an error')
+            console.log('errrrrrr', err)
+            t.end()
+        })
 
-
-
-    // create a `follow` msg -- userTwo follows userThree
-    var followMsg = ssc.createMsg(userTwo, null, msgContent)
-    var followProm = follow.post(userTwo, followMsg)
+    function createfollowProm () {
+        // create a `follow` msg -- userTwo follows userThree
+        var followMsg = ssc.createMsg(userTwo, null, {
+            type: 'follow',
+            contact: userThree.id,
+            author: userTwo.id
+        })
+        // var followProm = follow.post(userTwo, followMsg)
+        return follow.post(userTwo, followMsg)
+    }
 
     // make a post by userThree
     // get the file
@@ -181,7 +197,7 @@ test('foafs', function (t) {
     var postProm = postOneMsg(userThree, msg, file)
 
     Promise.all([
-        followProm,
+        profileProm,
         postProm
     ])
         .then(() => {
