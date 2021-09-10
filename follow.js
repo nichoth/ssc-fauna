@@ -57,7 +57,7 @@ function get (author) {
                 }, {})
         })
         .catch(err => {
-            console.log('errrrr', err)
+            console.log('errrrr in follow', err)
         })
 }
 
