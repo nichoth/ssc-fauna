@@ -3,7 +3,7 @@ var test = require('tape')
 var fs = require('fs')
 var follow = require('../follow')
 var profile = require('../profile')
-var avatar = require('../avatar')
+// var avatar = require('../avatar')
 var ssc = require('@nichoth/ssc')
 
 var keys = ssc.createKeys()
@@ -108,7 +108,8 @@ test('follow another user', function (t) {
         return follow.post(keys, followMsg3)
             .then((res) => {
                 t.pass('should create a follow document')
-                t.equal(res.value.content.name, 'barrr', 'should return the profile')
+                t.equal(res.value.content.name, 'barrr',
+                    'should return the profile')
                 t.equal(res.value.author, userThree.id,
                     'should have the right user ID')
                 t.end()

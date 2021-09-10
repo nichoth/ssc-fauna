@@ -11,9 +11,9 @@
     "postversion": "git push && git push --tags && npm publish"
   },
   "dependencies": {
-    "@nichoth/ssc": "^0.0.9",
+    "@nichoth/ssc": "^0.0.18",
     "cloudinary": "^1.26.0",
-    "faunadb": "^4.4.0",
+    "faunadb": "^4.4.1",
     "xtend": "^4.0.2"
   },
   "devDependencies": {

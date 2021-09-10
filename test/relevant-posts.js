@@ -5,6 +5,7 @@ var ssc = require('@nichoth/ssc')
 var fs = require('fs')
 var relevantPosts = require('../relevant-posts')
 var follow = require('../follow')
+var profile = require('../profile')
 var { postOneMsg } = require('../feed')
 
 var userOne = ssc.createKeys()
@@ -25,27 +26,49 @@ test('get relevant posts when there are none', function (t) {
 })
 
 test('get relevant posts', function (t) {
-    var msgContent = {
-        type: 'follow',
-        contact: userTwo.id,
-        author: userOne.id
-    }
+    // must create a profile for the user before you follow them
+    var profileMsg = ssc.createMsg(userTwo, null, {
+        type: 'profile',
+        about: userTwo.id,
+        name: 'fooo'
+    })
 
-    // create a `follow` msg
-    var msg = ssc.createMsg(userOne, null, msgContent)
-    var followProm = follow.post(userOne.id, userOne, msg)
-
-    // get the file
-    var file = 'data:image/jpg;base64,' +
-        fs.readFileSync(__dirname + '/caracal.jpg', {
-            encoding: 'base64'
+    // we create a profile and follow them here
+    var profileProm = profile.post(userTwo.id, null, profileMsg)
+        .then(res => {
+            t.equal(res.value.content.name, 'fooo',
+                'should return the new profile')
+            t.equal(res.value.content.about, userTwo.id,
+                'should return the right id')
+            return createfollowProm()
+        })
+        .catch(err => {
+            t.fail('got an error')
+            console.log('errrrrrr', err)
+            t.end()
         })
 
-    // get the file hash for the `mentions` array
-    var hash = createHash('sha256')
-    hash.update(file)
-    var _hash = hash.digest('base64')
+    function createfollowProm () {
+        // create a `follow` msg
+        var msgContent = {
+            type: 'follow',
+            contact: userTwo.id,
+            author: userOne.id
+        }
+        var msg = ssc.createMsg(userOne, null, msgContent)
+        return follow.post(userOne, msg)
+    }
 
+        // get the file
+        var file = 'data:image/jpg;base64,' +
+            fs.readFileSync(__dirname + '/caracal.jpg', {
+                encoding: 'base64'
+            })
+
+        // get the file hash for the `mentions` array
+        var hash = createHash('sha256')
+        hash.update(file)
+        var _hash = hash.digest('base64')
 
     // create a `post` msg
     var msg2 = ssc.createMsg(userTwo, null, {
@@ -58,7 +81,7 @@ test('get relevant posts', function (t) {
     var feedProm = postOneMsg(userTwo, msg2, file)
 
     Promise.all([
-        followProm,
+        profileProm,
         feedProm
     ])
         .then((res) => {
@@ -126,9 +149,15 @@ test('foafs', function (t) {
         author: userTwo.id
     }
 
+
+
+    // create a profile for userThree
+
+
+
     // create a `follow` msg -- userTwo follows userThree
     var followMsg = ssc.createMsg(userTwo, null, msgContent)
-    var followProm = follow.post(userTwo.id, userTwo, followMsg)
+    var followProm = follow.post(userTwo, followMsg)
 
     // make a post by userThree
     // get the file

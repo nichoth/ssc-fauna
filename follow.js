@@ -65,9 +65,12 @@ function get (author) {
 // keys needs to have { id, public }
 async function post (keys, msg) {
     try {
+        console.log('bbbbbbb', keys)
+        console.log('cccccc', msg)
         var isValid = ssc.verifyObj(keys, null, msg)
+        keys = keys.public ? keys : { public: keys }
     } catch (err) {
-        console.log('not isvalid', isValid, err)
+        console.log('not isvalid aaaaa', isValid, err)
         throw err
     }
 
@@ -92,7 +95,7 @@ async function post (keys, msg) {
     )
         .then(res => res.data)
         .catch(err => {
-            console.log('aaaaaa', err)
+            console.log('arg', err)
             throw err
         })
 
