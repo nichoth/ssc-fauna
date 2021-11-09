@@ -15,10 +15,8 @@ The secret key determines which DB it will use
 
 ```
 FAUNADB_SERVER_SECRET="123"
-CLOUDINARY_CLOUD_NAME="me"
-CLOUDINARY_URL="cloudinary://719239934275155:example"
-CLOUDINARY_API_SECRET="example-secret"
-CLOUDINARY_API_KEY="123"
+FAUNADB_SERVER_SECRET_TEST="123"
+NODE_ENV=test
 ```
 
 You can copy `.env.example` to `.env` and change the value of the secrets.
@@ -26,11 +24,10 @@ You can copy `.env.example` to `.env` and change the value of the secrets.
 --------------------------------------------
 
 ## prepare the DB
-first create the necessary collections and indexes by
-running `script/index.js`
+Create the necessary collections and indexes by running `script/index.js`
 
 ```
-$ node script
+$ NODE_ENV=test node script
 ```
 
 This will create several collections and indexes in the database --
@@ -56,8 +53,8 @@ $ npm test
 ### avatar
 
 ```js
-var avatar = require('@nichoth/ssc-fauna/avatar')
-var { get, post } = avatar
+var profile = require('@nichoth/ssc-fauna/profile')
+var { get, post } = profile
 
 get('@123')
     .then(res => {
@@ -73,7 +70,7 @@ get('@123')
 //     "avatarLink": "E21vi/w190Gmg+cfO5WXh6r6iYTzQkWUL9ah6shs4kc="
 //   }
 // }
-post({ public: '123' }, file)
+post({ public: '123' }, { /*...*/ })
     .then(res => {
         console.log('res', res)
     })
