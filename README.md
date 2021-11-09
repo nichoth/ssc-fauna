@@ -2,7 +2,7 @@
 
 SSC database built with [fauna db](https://fauna.com/)
 
-The official protocol for now is to do validation in the server code, in here
+The official protocol, for now, is to do validation in the server code, in here
 we just write what we're given to the DB.
 
 ---------------------------------------------------
