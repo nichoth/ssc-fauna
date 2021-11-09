@@ -25,6 +25,11 @@ var collections = [
             name: 'post-by-author',
             source: q.Collection('posts'),
             terms: [ { field: ['data', 'value', 'author'] } ]
+        },
+        {
+            name: 'post-by-key',
+            source: q.Collection('posts'),
+            terms: [{ field: ['data', 'key'] }]
         }]
     ],
     // ['abouts'],  // replaced by `profile`
@@ -41,9 +46,17 @@ var collections = [
             terms: [{ field: ['data', 'name'] }]
         }]
     ],
+
     ['invitations'],
     ['server-following'],
-    ['follow']
+
+    ['follow', [
+        {
+            name: 'following',
+            source: q.Collection('follow'),
+            terms: [{ field: ['data', 'value', 'author'] }]
+        }
+    ]]
 ]
 
 Promise.all(collections.map(([name, indexes]) => {
