@@ -4,10 +4,12 @@ var ssc = require('@nichoth/ssc')
 var fs = require('fs')
 var feed = require('../feed')
 var singlePost = require('../single-post')
-var createHash = require('crypto').createHash
-var crypto = require("crypto");
-
 var abouts = require('../abouts')
+// var createHash = require('crypto').createHash
+var crypto = require("crypto");
+var createHash = require('../create-hash')
+
+// var abouts = require('../abouts')
 
 var keys = ssc.createKeys()
 var { get, postOneMsg } = feed
@@ -35,14 +37,12 @@ test('post one message', function (t) {
             encoding: 'base64'
         })
 
-    var hash = createHash('sha256')
-    hash.update(file)
-    var _hash = hash.digest('base64')
+    var hash = createHash(file)
 
     msg = ssc.createMsg(keys, null, {
         type: 'post',
         text: 'woooo',
-        mentions: [_hash]
+        mentions: [hash]
     })
 
     postOneMsg(keys, msg, file)
@@ -77,14 +77,12 @@ test('get the feed again', function (t) {
 })
 
 test('post another msg', function (t) {
-    var hash = createHash('sha256')
-    hash.update(file)
-    var _hash = hash.digest('base64')
+    var hash = createHash(file)
 
     var msg2 = ssc.createMsg(keys, msg, {
         type: 'post',
         text: 'woooo2',
-        mentions: [_hash]
+        mentions: [hash]
     })
 
     postOneMsg(keys, msg2, file)
@@ -139,11 +137,8 @@ test('name the feed', function (t) {
 })
 
 test('get a feed by name', function (t) {
-    // console.log('name', name)
     feed.getByName(name)
         .then(res => {
-            // console.log('**res**', res)
-            // console.log('my keys', keys)
             t.ok(Array.isArray(res), 'should return an array')
             var myPosts = res.filter(post => {
                 return post.value.author === keys.id

@@ -1,5 +1,6 @@
 require('dotenv').config()
-var createHash = require('crypto').createHash
+// var createHash = require('crypto').createHash
+var createHash = require('../create-hash')
 var test = require('tape')
 var ssc = require('@nichoth/ssc')
 var fs = require('fs')
@@ -66,15 +67,16 @@ test('get relevant posts', function (t) {
         })
 
     // get the file hash for the `mentions` array
-    var hash = createHash('sha256')
-    hash.update(file)
-    var _hash = hash.digest('base64')
+    // var hash = createHash('sha256')
+    // hash.update(file)
+    // var _hash = hash.digest('base64')
+    var hash = createHash(file)
 
     // create a `post` msg
     var msg2 = ssc.createMsg(userTwo, null, {
         type: 'test',
         text: 'woooo',
-        mentions: [_hash]
+        mentions: [hash]
     })
 
     // add some msgs so userTwo has a feed
@@ -183,15 +185,16 @@ test('foafs', function (t) {
         })
 
     // get the file hash for the `mentions` array
-    var hash = createHash('sha256')
-    hash.update(file)
-    var _hash = hash.digest('base64')
+    // var hash = createHash('sha256')
+    // hash.update(file)
+    // var _hash = hash.digest('base64')
+    var hash = createHash(file)
 
     // create a `post` msg
     var msg = ssc.createMsg(userThree, null, {
         type: 'test',
         text: 'testing foafs',
-        mentions: [_hash]
+        mentions: [hash]
     })
 
     var postProm = postOneMsg(userThree, msg, file)

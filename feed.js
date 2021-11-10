@@ -19,7 +19,6 @@ cloudinary.config({
 
 
 function getByName (name) {
-
     return client.query(
         q.Map(
             q.Paginate( q.Reverse( q.Match(
@@ -113,12 +112,8 @@ function postOneMsg (keys, msg, file) {
             }
 
             // msg list is ok, write it to DB
-            return msgAndFile(msg, file, hash, _hash)
+            return msgAndFile(msg, file, hash)
                 .then(res => {
-                    // make the url here for the image
-                    // var imgHash = res[0].value.content.mentions[0]
-                    // var slugslug = encodeURIComponent(slugifiedHash)
-                    // var imgUrl = cloudinary.url(slugslug, {
                     var imgUrl = cloudinary.url(hash, {
                         // width: 100,
                         // height: 150,
@@ -135,10 +130,10 @@ function postOneMsg (keys, msg, file) {
                 // write the msg b/c the feed is new
                 return msgAndFile(msg, file, hash)
                     .then(res => {
-                        var slugslug = encodeURIComponent(slugifiedHash)
+                        // var slugslug = encodeURIComponent(slugifiedHash)
 
                         // we slugify twice
-                        var imgUrl = cloudinary.url(slugslug, {
+                        var imgUrl = cloudinary.url(hash, {
                             // width: 100,
                             // height: 150,
                             // crop: "fill"
