@@ -6,10 +6,10 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-function upload (file, _hash) {
+function upload (file, hash) {
     return new Promise(function (resolve, reject) {
         cloudinary.uploader.upload(file, {
-            public_id: _hash,
+            public_id: hash,
             overwrite: true
         }, function (err, res) {
             if (err) {

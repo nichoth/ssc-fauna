@@ -1,19 +1,12 @@
 var faunadb = require('faunadb')
-let cloudinary = require("cloudinary").v2
 var upload = require('./upload')
-var createHash = require('crypto').createHash
+var createHash = require('./create-hash')
 var ssc = require('@nichoth/ssc')
 var xtend = require('xtend')
 
 var q = faunadb.query
 var client = new faunadb.Client({
     secret: process.env.FAUNADB_SERVER_SECRET
-})
-
-cloudinary.config({ 
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
 })
 
 function get (id) {
@@ -86,9 +79,7 @@ function writeToDB (id, msg) {
 }
 
 function getHash (file) {
-    var hash = createHash('sha256')
-    hash.update(file)
-    return hash.digest('base64')
+    return createHash(file)
 }
 
 module.exports = { get, post }
