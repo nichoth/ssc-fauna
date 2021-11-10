@@ -2,7 +2,7 @@ require('dotenv').config()
 var faunadb = require('faunadb')
 var xtend = require('xtend')
 var ssc = require('@nichoth/ssc')
-var createHash = require('crypto').createHash
+var createHash = require('./create-hash')
 let cloudinary = require("cloudinary").v2;
 var upload = require('./upload')
 
@@ -57,9 +57,9 @@ function get (author) {
 
                         // slugify the hash twice
                         // don't know why we need to do it twice
-                        var slugifiedHash = encodeURIComponent('' + mention)
-                        var slugslug = encodeURIComponent(slugifiedHash)
-                        return cloudinary.url(slugslug)
+                        // var slugifiedHash = encodeURIComponent('' + mention)
+                        // var slugslug = encodeURIComponent(slugifiedHash)
+                        return cloudinary.url(mention /*slugslug*/)
                     })
 
                 var xtendedMsg = xtend(post.data, {
@@ -94,12 +94,7 @@ function postOneMsg (keys, msg, file) {
 
     // see https://github.com/ssb-js/ssb-validate/blob/main/index.js#L149
 
-    var hash = createHash('sha256')
-    hash.update(file)
-    var _hash = hash.digest('base64')
-    var slugifiedHash = encodeURIComponent('' + _hash)
-
-    // console.log('????', msg.content.mentions[0] === _hash)
+    var hash = createHash(file)
 
     // get an existing feed
     // to check if the merkle list matches up
@@ -109,10 +104,6 @@ function postOneMsg (keys, msg, file) {
         )
     )
         .then(res => {
-            // console.log('res', res)
-            // console.log('res.data.key', res.data.key)
-            // console.log('msg.previous', msg.previous)
-
             if (res.data.key !== msg.previous) {
                 console.log('mismatch!!!!!', res.data.key, msg.previous)
                 console.log('**prev key**', res.data.key)
@@ -122,12 +113,13 @@ function postOneMsg (keys, msg, file) {
             }
 
             // msg list is ok, write it to DB
-            return msgAndFile(msg, file, slugifiedHash, _hash)
+            return msgAndFile(msg, file, hash, _hash)
                 .then(res => {
                     // make the url here for the image
                     // var imgHash = res[0].value.content.mentions[0]
-                    var slugslug = encodeURIComponent(slugifiedHash)
-                    var imgUrl = cloudinary.url(slugslug, {
+                    // var slugslug = encodeURIComponent(slugifiedHash)
+                    // var imgUrl = cloudinary.url(slugslug, {
+                    var imgUrl = cloudinary.url(hash, {
                         // width: 100,
                         // height: 150,
                         // crop: "fill"
@@ -141,7 +133,7 @@ function postOneMsg (keys, msg, file) {
         .catch(err => {
             if (err.name === 'NotFound') {
                 // write the msg b/c the feed is new
-                return msgAndFile(msg, file, slugifiedHash, _hash)
+                return msgAndFile(msg, file, hash)
                     .then(res => {
                         var slugslug = encodeURIComponent(slugifiedHash)
 
@@ -164,10 +156,10 @@ function postOneMsg (keys, msg, file) {
             throw err
         })
 
-    function msgAndFile (msg, file, slug, hash) {
+    function msgAndFile (msg, file, hash) {
         return Promise.all([
             writeMsg(msg, hash),
-            upload(file, slug)
+            upload(file, hash)
         ])
             .catch((err) => {
                 console.log('errrrrr', err)
@@ -175,25 +167,7 @@ function postOneMsg (keys, msg, file) {
             })
     }
 
-    function writeMsg (_msg, hash) {
-        // we are creating the msg and hash server side here
-        // var msg = xtend(_msg, {
-        //     content: xtend(_msg.content, {
-        //         mentions: [hash]
-        //     })
-        // })
-
-
-
-
-
-        // should just use the existing hash that was created client side
-        var msg = _msg
-
-
-
-        // console.log('msg in herererererere', msg)
-
+    function writeMsg (msg) {
         var msgHash = ssc.getId(msg)
 
         // we use the hash of the message *with* `mentions` array in it
