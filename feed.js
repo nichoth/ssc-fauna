@@ -153,8 +153,8 @@ function postOneMsg (keys, msg, file) {
 
     function msgAndFile (msg, file, hash) {
         return Promise.all([
-            writeMsg(msg, hash),
-            upload(file, hash)
+            upload(file, hash),
+            writeMsg(msg, hash)
         ])
             .catch((err) => {
                 console.log('errrrrr', err)
@@ -182,4 +182,3 @@ module.exports = {
     getByName,
     postOneMsg
 }
-
