@@ -8,7 +8,7 @@ var sec = (process.env.BRANCH ==='test' || process.env.NODE_ENV === 'test') ?
 
 var client = new faunadb.Client({
     secret: sec,
-    domain: 'db.us.fauna.com'
+    // domain: 'db.us.fauna.com'
 })
 
 console.log('node env', process.env.NODE_ENV)

@@ -7,6 +7,13 @@ we just write what we're given to the DB.
 
 ---------------------------------------------------
 
+## install
+```
+$ npm i @nichoth/ssc-fauna
+```
+
+-------------------------------------------------
+
 ## env variables
 1. Make a DB in fauna and put the secret key in `.env`.
 The secret key determines which DB it will use
