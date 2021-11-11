@@ -51,8 +51,9 @@ var collections = [
     ['server-following', [
         {
             name: 'server-following-who',
-            source: q.Collection('server-following')
+            source: q.Collection('server-following'),
             terms: [ { field: ['data', 'contact'] } ]
+        }
     ]],
 
     ['follow', [
