@@ -5,9 +5,6 @@ var client = new faunadb.Client({
     secret: process.env.FAUNADB_SERVER_SECRET
 })
 
-
-// TODO -- get the foaf posts
-
 function getFollowing (id) {
     return client.query(
         // get everyone `id` is following
@@ -34,9 +31,9 @@ function getWithFoafs (id) {
                         q.Union(
                             // get the posts for the foaf array
                             // include your own id
-                            [q.Reverse(q.Match(q.Index('author'), id))].concat(
+                            [q.Reverse(q.Match(q.Index('post-by-author'), id))].concat(
                                 arr.map(post => {
-                                    return q.Reverse(q.Match(q.Index('author'),
+                                    return q.Reverse(q.Match(q.Index('post-by-author'),
                                         post.value.content.contact))
                                 })
                             )
@@ -79,9 +76,9 @@ function getWithFoafs (id) {
                         q.Union(
                             // get the posts for the foaf array
                             // include your own id
-                            [q.Reverse(q.Match(q.Index('author'), id))].concat(
+                            [q.Reverse(q.Match(q.Index('post-by-author'), id))].concat(
                                 foafArr.map(followMsg => {
-                                    return q.Reverse(q.Match(q.Index('author'),
+                                    return q.Reverse(q.Match(q.Index('post-by-author'),
                                         followMsg.value.content.contact))
                                 })
                             )
@@ -102,8 +99,6 @@ function getWithFoafs (id) {
 }
 
 function get (id) {
-    // TODO -- should be done in a single query, not multiple
-
     return getFollowing(id)
         .then(res => res.data.map(d => d.data))
         .then(arr => {
@@ -114,9 +109,9 @@ function get (id) {
                     q.Paginate(
                         q.Union(
                             // include your own id
-                            [q.Reverse(q.Match(q.Index('author'), id))].concat(
+                            [q.Reverse(q.Match(q.Index('post-by-author'), id))].concat(
                                 arr.map(post => {
-                                    return q.Reverse(q.Match(q.Index('author'),
+                                    return q.Reverse(q.Match(q.Index('post-by-author'),
                                         post.value.content.contact))
                                 })
                             )

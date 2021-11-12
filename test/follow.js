@@ -1,6 +1,6 @@
 require('dotenv').config()
 var test = require('tape')
-var fs = require('fs')
+// var fs = require('fs')
 var follow = require('../follow')
 var profile = require('../profile')
 // var avatar = require('../avatar')

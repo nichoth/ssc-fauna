@@ -7,7 +7,15 @@ var fs = require('fs')
 var relevantPosts = require('../relevant-posts')
 var follow = require('../follow')
 var profile = require('../profile')
-var { postOneMsg } = require('../feed')
+// var { postOneMsg } = require('../feed')
+var writeMsg = require('../write-msg')
+var cloudinary = require('cloudinary').v2
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+})
 
 var userOne = ssc.createKeys()
 var userTwo = ssc.createKeys()
@@ -75,12 +83,17 @@ test('get relevant posts', function (t) {
     // create a `post` msg
     var msg2 = ssc.createMsg(userTwo, null, {
         type: 'test',
-        text: 'woooo',
+        text: 'woooooooo',
         mentions: [hash]
     })
 
     // add some msgs so userTwo has a feed
-    var feedProm = postOneMsg(userTwo, msg2, file)
+    // var feedProm = postOneMsg(userTwo, msg2, file)
+    var feedProm = writeMsg(
+        userTwo,
+        msg2,
+        (ms => ms.map(m => cloudinary.url(m)))
+    )
 
     Promise.all([
         profileProm,
@@ -197,7 +210,12 @@ test('foafs', function (t) {
         mentions: [hash]
     })
 
-    var postProm = postOneMsg(userThree, msg, file)
+    // var postProm = postOneMsg(userThree, msg, file)
+    var postProm = writeMsg(
+        userThree,
+        msg,
+        ms => ms.map(m => cloudinary.url(m))
+    )
 
     Promise.all([
         profileProm,
@@ -220,7 +238,7 @@ test('foafs', function (t) {
                     })
 
                     t.ok(userTwoPost, 'should have a message by userTwo')
-                    t.equal(userTwoPost.value.content.text, 'woooo',
+                    t.equal(userTwoPost.value.content.text,  'woooooooo',
                         'should have the post from userTwo')
                     t.end()
                 })
