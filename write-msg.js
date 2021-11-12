@@ -75,8 +75,9 @@ function writeMsg (msg) {
     // TODO -- what's going on with the data attribute duplication?
     return client.query(
         q.Create(q.Collection('posts'), {
+            value: msg,
             key: msgHash,
-            data: { value: msg, key: msgHash }
+            // data: { value: msg, key: msgHash }
         })
     )
 }
