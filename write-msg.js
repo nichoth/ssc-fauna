@@ -77,7 +77,7 @@ function writeMsg (msg) {
         q.Create(q.Collection('posts'), {
             value: msg,
             key: msgHash,
-            // data: { value: msg, key: msgHash }
+            data: { value: msg, key: msgHash }
         })
     )
 }
