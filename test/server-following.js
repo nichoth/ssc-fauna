@@ -1,14 +1,45 @@
 require('dotenv').config()
 var test = require('tape')
-var serverFollowing = require('../server-following')
+var serverIsFollowing = require('../server-is-following')
+var followMe = require('../follow-me')
 var ssc = require('@nichoth/ssc')
+var bcrypt = require('bcrypt')
 
-var user
+var user = ssc.createKeys()
 
-test('todo', t => {
-    console.log('todo')
-    t.end()
+test('follow me', t => {
+    createHash('aaa')
+        .then(hash => {
+            // (passwords, inputPwd, id)
+            followMe([hash], 'aaa', user.id)
+                .then(() => {
+                    t.end()
+                })
+                .catch(err => {
+                    t.fail(err.toString())
+                    t.end()
+                })
+        })
 })
+
+test('isFollowing', t => {
+    serverIsFollowing(user.id)
+        .then(isFoll => {
+            t.equal(isFoll, true, 'should return isFollowing = true')
+            t.end()
+        })
+})
+
+function createHash (pw) {
+    return bcrypt.hash(pw, 10)
+        .then(hash => {
+            return hash
+        })
+}
+
+
+
+
 
 // test('check that the server is not following someone', t => {
 //     user = ssc.createKeys()

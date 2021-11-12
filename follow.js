@@ -23,15 +23,7 @@ cloudinary.config({
 // following: true 
 // }
 
-// q.Get( q.Match(q.Index('profile-by-id'), msg.content.contact) ),
-
 function get (author) {
-
-    // client.query(
-    //     q.Get(q.Match(q.Index('profile-by-id'), author))
-    // )
-    //     .then(res => console.log('***aaaa***', res.data))
-    //     .catch(err => console.log('****aaarrrrr***', err))
 
     return client.query(
         q.Map(
@@ -66,8 +58,6 @@ function get (author) {
 // keys needs to have { id, public }
 async function post (keys, msg) {
     try {
-        // console.log('bbbbbbb', keys)
-        // console.log('cccccc', msg)
         var isValid = ssc.verifyObj(keys, null, msg)
         keys = keys.public ? keys : { public: keys }
     } catch (err) {
@@ -78,8 +68,6 @@ async function post (keys, msg) {
     if (!isValid) {
         throw new Error('invalid message')
     }
-
-    // console.log('****msg****', msg)
 
     // write a new 'follow' msg
     var msgHash = ssc.getId(msg)
