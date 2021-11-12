@@ -19,7 +19,7 @@ module.exports = async function (pwds, password, id) {
             process.env.FAUNADB_SERVER_SECRET)
     })
 
-    // write the the DB that we are following the user
+    // write in the DB that we are following the user
     return client.query(
         q.Create(q.Collection('server-following'), {
             data: { type: 'follow', contact: id }
