@@ -13,6 +13,7 @@ test('follow me', t => {
             // (passwords, inputPwd, id)
             followMe([hash], 'aaa', user.id)
                 .then(() => {
+                    t.pass('server should follow the user')
                     t.end()
                 })
                 .catch(err => {
@@ -27,6 +28,23 @@ test('isFollowing', t => {
         .then(isFoll => {
             t.equal(isFoll, true, 'should return isFollowing = true')
             t.end()
+        })
+})
+
+test('use a bad password', t => {
+    var user2 = ssc.createKeys()
+
+    createHash('ok')
+        .then(hash => {
+            followMe([hash], 'bad password', user2.id)
+                .then(() => {
+                    t.fail('should reject a bad password')
+                    t.end()
+                })
+                .catch(() => {
+                    t.pass('should reject a bad password')
+                    t.end()
+                })
         })
 })
 

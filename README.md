@@ -42,7 +42,7 @@ This will create several collections and indexes in the database --
 `posts / author` -- get a feed by author id
 `posts / key` -- get a specific post by its key
 `avatar / avatar-by-id` -- get an avatar by user id
-`abouts / about-by-author` -- get a username byt the user id
+`abouts / about-by-author` -- get a username by the user id
 `follow / follows` -- who is the `author` following?
 
 
