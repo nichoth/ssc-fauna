@@ -90,3 +90,23 @@ test('write a message', t => {
     }
 })
 ```
+
+### server follows a user
+
+```js
+test('follow me', t => {
+    createHash('aaa')
+        .then(hash => {
+            // (passwords, inputPwd, id)
+            followMe([hash], 'aaa', user.id)
+                .then(() => {
+                    t.pass('server should follow the user')
+                    t.end()
+                })
+                .catch(err => {
+                    t.fail(err.toString())
+                    t.end()
+                })
+        })
+})
+```
